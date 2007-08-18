@@ -6,6 +6,8 @@ class Alkane {
     private String description;
     private ArrayList<Carbon> carbons = new ArrayList<Carbon>();
 
+    private static String[] iupacNames = null;
+
     public Alkane( String description ) {
       this.description = description;
 
@@ -110,7 +112,50 @@ class Alkane {
     }
 
     public String iupacName() {
-      return "";
+      
+      if ( iupacNames == null ) {
+        
+        String[] lowNames = new String[] {
+          null,
+          "methane", "ethane", "propane",
+          "buthane", "pentane", "hexane",
+          "heptane", "octane", "nonane",
+        };
+
+        ArrayList<String> names = new ArrayList<String>();
+        for ( int i = 0; i < lowNames.length; i++ )
+          names.add( lowNames[i] );
+
+        String[] suffixes = new String[] {
+          null,
+          "decane", "cosane", "triacontane",
+          "tetracontane", "pentacontane", "hexacontane",
+          "heptacontane", "octacontane", "nonacontane",
+        };
+
+        String[] prefixes = new String[] {
+          null,
+          "hen", "do", "tri",
+          "tetra", "penta", "hexa",
+          "hepta", "octa", "nona",
+        };
+
+        for ( int tens = 1; tens <= 9; tens++ ) {
+          names.add( suffixes[tens] );
+          for ( int ones = 1; ones <= 9; ones++ )
+            names.add( prefixes[ones] + suffixes[tens] );
+        }
+
+        // Exceptions
+        names.set( 11, "undecane" );
+        names.set( 20, "eicosane" );
+        names.set( 21, "heneicosane" );
+        names.add("hectane");
+
+        iupacNames = names.toArray( new String[0] );
+      }
+
+      return iupacNames[carbons.size()];
     }
 
     public boolean equals( Object o ) {

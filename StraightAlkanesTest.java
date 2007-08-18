@@ -31,37 +31,37 @@ class StraightAlkanesTest extends Test {
 
             "hentriacontane", "dotriacontane", "tritriacontane",
             "tetratriacontane", "pentatriacontane", "hexatriacontane",
-            "heptatriacontane", "octatriacontane", "nonatriacontaney",
+            "heptatriacontane", "octatriacontane", "nonatriacontane",
             "tetracontane",
 
             "hentetracontane", "dotetracontane", "tritetracontane",
             "tetratetracontane", "pentatetracontane", "hexatetracontane",
-            "heptatetracontane", "octatetracontane", "nonatetracontaney",
+            "heptatetracontane", "octatetracontane", "nonatetracontane",
             "pentacontane",
 
             "henpentacontane", "dopentacontane", "tripentacontane",
             "tetrapentacontane", "pentapentacontane", "hexapentacontane",
-            "heptapentacontane", "octapentacontane", "nonapentacontaney",
+            "heptapentacontane", "octapentacontane", "nonapentacontane",
             "hexacontane",
 
             "henhexacontane", "dohexacontane", "trihexacontane",
             "tetrahexacontane", "pentahexacontane", "hexahexacontane",
-            "heptahexacontane", "octahexacontane", "nonahexacontaney",
+            "heptahexacontane", "octahexacontane", "nonahexacontane",
             "heptacontane",
 
             "henheptacontane", "doheptacontane", "triheptacontane",
             "tetraheptacontane", "pentaheptacontane", "hexaheptacontane",
-            "heptaheptacontane", "octaheptacontane", "nonaheptacontaney",
+            "heptaheptacontane", "octaheptacontane", "nonaheptacontane",
             "octacontane",
 
             "henoctacontane", "dooctacontane", "trioctacontane",
             "tetraoctacontane", "pentaoctacontane", "hexaoctacontane",
-            "heptaoctacontane", "octaoctacontane", "nonaoctacontaney",
+            "heptaoctacontane", "octaoctacontane", "nonaoctacontane",
             "nonacontane",
 
             "hennonacontane", "dononacontane", "trinonacontane",
             "tetranonacontane", "pentanonacontane", "hexanonacontane",
-            "heptanonacontane", "octanonacontane", "nonanonacontaney",
+            "heptanonacontane", "octanonacontane", "nonanonacontane",
             "hectane",
          };
 
