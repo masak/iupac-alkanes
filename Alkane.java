@@ -109,6 +109,10 @@ class Alkane {
       return leaves;
     }
 
+    public String iupacName() {
+      return "";
+    }
+
     public boolean equals( Object o ) {
       if ( !(o instanceof Alkane) )
         return false;
