@@ -1,18 +1,7 @@
-class StraightAlkanesTest extends Test {
+class StraightAlkanesTest extends AlkanesTest {
 
       private StraightAlkanesTest( String name, int testsPlanned ) {
          super( name, testsPlanned );
-      }
-
-      private void is( String actual, String expected, String description ) {
-
-         boolean test = actual.equals(expected);
-         ok( test, description );
-
-         if ( !test ) {
-            System.out.println("     Expected: '" + expected + "'");
-            System.out.println("       Actual: '" + actual   + "'");
-         }
       }
 
       public void test() {
