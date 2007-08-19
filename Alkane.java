@@ -78,13 +78,9 @@ class Alkane {
 
       alreadyTraversed.add(node);
 
-      for ( Carbon neighbor : node.neighbors() ) {
-        
-        if ( alreadyTraversed.contains(neighbor) )
-          continue;
-
-        descriptions.add( traverse(neighbor, alreadyTraversed) );
-      }
+      for ( Carbon neighbor : node.neighbors() )
+        if ( !alreadyTraversed.contains(neighbor) )
+           descriptions.add( traverse(neighbor, alreadyTraversed) );
 
       Collections.sort( descriptions );
 
