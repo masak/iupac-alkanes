@@ -117,9 +117,9 @@ class Alkane {
         
         String[] lowNames = new String[] {
           null,
-          "methane", "ethane", "propane",
-          "buthane", "pentane", "hexane",
-          "heptane", "octane", "nonane",
+          "Methane", "Ethane",  "Propane",
+          "Buthane", "Pentane", "Hexane",
+          "Heptane", "Octane",  "Nonane",
         };
 
         ArrayList<String> names = new ArrayList<String>();
@@ -128,29 +128,29 @@ class Alkane {
 
         String[] suffixes = new String[] {
           null,
-          "decane", "cosane", "triacontane",
-          "tetracontane", "pentacontane", "hexacontane",
-          "heptacontane", "octacontane", "nonacontane",
+          "Decane",       "Cosane",       "Triacontane",
+          "Tetracontane", "Pentacontane", "Hexacontane",
+          "Heptacontane", "Octacontane",  "Nonacontane",
         };
 
         String[] prefixes = new String[] {
           null,
-          "hen", "do", "tri",
-          "tetra", "penta", "hexa",
-          "hepta", "octa", "nona",
+          "Hen",   "Do",    "Tri",
+          "Tetra", "Penta", "Hexa",
+          "Hepta", "Octa",  "Nona",
         };
 
         for ( int tens = 1; tens <= 9; tens++ ) {
           names.add( suffixes[tens] );
           for ( int ones = 1; ones <= 9; ones++ )
-            names.add( prefixes[ones] + suffixes[tens] );
+            names.add( prefixes[ones] + suffixes[tens].toLowerCase() );
         }
 
         // Exceptions
-        names.set( 11, "undecane" );
-        names.set( 20, "eicosane" );
-        names.set( 21, "heneicosane" );
-        names.add("hectane");
+        names.set( 11, "Undecane" );
+        names.set( 20, "Eicosane" );
+        names.set( 21, "Heneicosane" );
+        names.add("Hectane");
 
         iupacNames = names.toArray( new String[0] );
       }

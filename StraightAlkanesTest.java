@@ -56,6 +56,7 @@ class StraightAlkanesTest extends AlkanesTest {
 
          String exp = "C";
          for ( int i = 0; i < names.length; i++ ) {
+            names[i] = Character.toUpperCase( names[i].charAt(0) ) + names[i].substring(1);
             is( new Alkane( exp ).iupacName(), names[i], names[i] );
             exp = "C(" + exp + ")";
          }
