@@ -108,7 +108,10 @@ class Alkane {
     }
 
     public int longestChainLength() {
-      int longestLength = 0;
+      if (carbons.isEmpty())
+        return 0;
+
+      int longestLength = 1;
 
       for ( Carbon leaf : leaves() ) {
         ArrayList<Carbon>     queue = new ArrayList<Carbon>(),
@@ -142,7 +145,7 @@ class Alkane {
       if ( iupacNames == null ) {
         
         String[] lowNames = new String[] {
-          null,
+          "",
           "Methane", "Ethane",  "Propane",
           "Buthane", "Pentane", "Hexane",
           "Heptane", "Octane",  "Nonane",
@@ -153,14 +156,14 @@ class Alkane {
           names.add( lowNames[i] );
 
         String[] suffixes = new String[] {
-          null,
+          "",
           "Decane",       "Cosane",       "Triacontane",
           "Tetracontane", "Pentacontane", "Hexacontane",
           "Heptacontane", "Octacontane",  "Nonacontane",
         };
 
         String[] prefixes = new String[] {
-          null,
+          "",
           "Hen",   "Do",    "Tri",
           "Tetra", "Penta", "Hexa",
           "Hepta", "Octa",  "Nona",
