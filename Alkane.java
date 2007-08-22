@@ -107,6 +107,36 @@ class Alkane {
       return leaves;
     }
 
+    public int longestChainLength() {
+      int longestLength = 0;
+
+      for ( Carbon leaf : leaves() ) {
+        ArrayList<Carbon>     queue = new ArrayList<Carbon>(),
+                          traversed = new ArrayList<Carbon>();
+        queue.add(leaf);
+
+        int length = 0;
+        for ( ; !queue.isEmpty(); length++ ) {
+          ArrayList<Carbon> newNodes = new ArrayList<Carbon>();
+
+          while ( !queue.isEmpty() ) {
+            Carbon currentNode = queue.remove(0);
+            traversed.add(currentNode);
+
+            for ( Carbon neighbor : currentNode.neighbors() )
+              if ( !traversed.contains(neighbor) )
+                newNodes.add(neighbor);
+          }
+
+          queue = newNodes;
+        }
+        if ( longestLength < length )
+          longestLength = length;
+      }
+
+      return longestLength;
+    }     
+
     public String iupacName() {
       
       if ( iupacNames == null ) {
@@ -151,7 +181,7 @@ class Alkane {
         iupacNames = names.toArray( new String[0] );
       }
 
-      return iupacNames[carbons.size()];
+      return iupacNames[longestChainLength()];
     }
 
     public boolean equals( Object o ) {

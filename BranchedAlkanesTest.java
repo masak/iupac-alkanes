@@ -5,11 +5,11 @@ class BranchedAlkanesTest extends AlkanesTest {
       }
 
       public void test() {
-         is( new Alkane("C(C(C(CC(C(C)))))").iupacName(),
+         is( new Alkane("C(C(C(CC(C))))").iupacName(),
              "3-Methylpentane",
              "Side chains and longest chain name the alkyl" );
          
-         is( new Alkane("C(CC(C(C(CC(CC)))))").iupacName(),
+         is( new Alkane("C(C(CC(C(CC(CC)))))").iupacName(),
              "2,3,5-Trimethylhexane",
              "Direction chosen so as to give lowest possible numbers I" );
          
