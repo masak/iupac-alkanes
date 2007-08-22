@@ -1,5 +1,6 @@
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 class Alkane {
 
@@ -107,37 +108,53 @@ class Alkane {
       return leaves;
     }
 
-    public int longestChainLength() {
-      if (carbons.isEmpty())
-        return 0;
+    public List<Carbon> longestChain() {
 
-      int longestLength = 1;
+      if (carbons.isEmpty())
+        return new ArrayList<Carbon>();
+
+      ArrayList<Carbon> longestChain = new ArrayList<Carbon>();
 
       for ( Carbon leaf : leaves() ) {
-        ArrayList<Carbon>     queue = new ArrayList<Carbon>(),
-                          traversed = new ArrayList<Carbon>();
-        queue.add(leaf);
+        ArrayList< ArrayList<Carbon> > queue
+          = new ArrayList< ArrayList<Carbon> >();
+        ArrayList<Carbon> traversed = new ArrayList<Carbon>();
+
+        ArrayList<Carbon> seed = new ArrayList<Carbon>();
+        seed.add(leaf);
+        queue.add(seed);
 
         int length = 0;
-        for ( ; !queue.isEmpty(); length++ ) {
-          ArrayList<Carbon> newNodes = new ArrayList<Carbon>();
+        while ( !queue.isEmpty() ) {
 
-          while ( !queue.isEmpty() ) {
-            Carbon currentNode = queue.remove(0);
+          ArrayList< ArrayList<Carbon> > newChains
+            = new ArrayList< ArrayList<Carbon> >();
+
+          for ( ArrayList<Carbon> currentChain : queue ) {
+
+            Carbon currentNode = currentChain.get(currentChain.size() - 1);
             traversed.add(currentNode);
 
-            for ( Carbon neighbor : currentNode.neighbors() )
-              if ( !traversed.contains(neighbor) )
-                newNodes.add(neighbor);
+            for ( Carbon neighbor : currentNode.neighbors() ) {
+              if ( !traversed.contains(neighbor) ) {
+                ArrayList<Carbon> longerChain
+                  = new ArrayList<Carbon>(currentChain);
+
+                longerChain.add(neighbor);
+                newChains.add(longerChain);
+              }
+            }
           }
 
-          queue = newNodes;
+          if ( newChains.isEmpty()
+               && longestChain.size() < queue.get(0).size() )
+            longestChain = queue.get(0);
+
+          queue = newChains;
         }
-        if ( longestLength < length )
-          longestLength = length;
       }
 
-      return longestLength;
+      return longestChain;
     }     
 
     public String iupacName() {
@@ -184,7 +201,7 @@ class Alkane {
         iupacNames = names.toArray( new String[0] );
       }
 
-      return iupacNames[longestChainLength()];
+      return iupacNames[ longestChain().size() ];
     }
 
     public boolean equals( Object o ) {
