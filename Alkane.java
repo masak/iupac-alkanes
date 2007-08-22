@@ -108,7 +108,33 @@ class Alkane {
       return leaves;
     }
 
-    public List<Carbon> longestChain() {
+    private ArrayList<ArrayList<Carbon>>
+    extendChains( ArrayList<ArrayList<Carbon>> chains,
+                  ArrayList<Carbon> traversed ) {
+
+      ArrayList< ArrayList<Carbon> > newChains
+        = new ArrayList< ArrayList<Carbon> >();
+
+      for ( ArrayList<Carbon> currentChain : chains ) {
+
+        Carbon currentNode = currentChain.get(currentChain.size() - 1);
+        traversed.add(currentNode);
+
+        for ( Carbon neighbor : currentNode.neighbors() ) {
+          if ( !traversed.contains(neighbor) ) {
+            ArrayList<Carbon> longerChain
+              = new ArrayList<Carbon>(currentChain);
+
+            longerChain.add(neighbor);
+            newChains.add(longerChain);
+          }
+        }
+      }
+
+      return newChains;
+    }
+
+    private List<Carbon> longestChain() {
 
       if (carbons.isEmpty())
         return new ArrayList<Carbon>();
@@ -128,23 +154,7 @@ class Alkane {
         while ( !queue.isEmpty() ) {
 
           ArrayList< ArrayList<Carbon> > newChains
-            = new ArrayList< ArrayList<Carbon> >();
-
-          for ( ArrayList<Carbon> currentChain : queue ) {
-
-            Carbon currentNode = currentChain.get(currentChain.size() - 1);
-            traversed.add(currentNode);
-
-            for ( Carbon neighbor : currentNode.neighbors() ) {
-              if ( !traversed.contains(neighbor) ) {
-                ArrayList<Carbon> longerChain
-                  = new ArrayList<Carbon>(currentChain);
-
-                longerChain.add(neighbor);
-                newChains.add(longerChain);
-              }
-            }
-          }
+            = extendChains(queue, traversed);
 
           if ( newChains.isEmpty()
                && longestChain.size() < queue.get(0).size() )
