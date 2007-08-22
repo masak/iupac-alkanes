@@ -6,7 +6,8 @@ abstract class AlkanesTest extends Test {
 
       protected void is( String actual, String expected, String description ) {
 
-         boolean test = actual.equals(expected);
+         boolean test = actual == null && expected == null
+                     || actual != null && actual.equals(expected);
          ok( test, description );
 
          if ( !test ) {
