@@ -21,19 +21,19 @@ class BranchedAlkanesTest extends AlkanesTest {
              "5-Methyl-4-propylnonane",
              "Direction chosen so as to give lowest possible numbers III" );
 
-         is( new Alkane("C(C(C(C(C(C(CC(CC(C(C(C))))"
-                        + "C(C(C(C(C(C)))))))))))").iupacName(),
-             "7-(1-Methylpentyl)dodecane",
+         is( new Alkane("C(C(C(C(C(C(C(C(CC(C(C(C))))"
+                        + "C(C(C(C(C(C))))))))))))").iupacName(),
+             "6-(1-Methylpentyl)dodecane",
              "Branches are numbered from the trunk out along longest chain I" );
          
-         is( new Alkane("C(C(C(C(C(C(CC(C(CC(C(C))))"
-                        + "C(C(C(C(C(C)))))))))))").iupacName(),
-             "7-(2-Methylpentyl)dodecane",
+         is( new Alkane("C(C(C(C(C(C(C(C(C(CC(C(C))))"
+                        + "C(C(C(C(C(C))))))))))))").iupacName(),
+             "6-(2-Methylpentyl)dodecane",
              "Branches are numbered from the trunk out along longest chain II" );
          
-         is( new Alkane("C(C(C(C(C(C(CC(C(C(C(CC))))"
-                        + "C(C(C(C(C(C)))))))))))").iupacName(),
-             "7-(5-Methylhexyl)dodecane",
+         is( new Alkane("C(C(C(C(C(C(C(C(C(C(C(CC))))"
+                        + "C(C(C(C(C(C))))))))))))").iupacName(),
+             "6-(5-Methylhexyl)dodecane",
              "Branches are numbered from the trunk out along longest chain III" );
       }
 
