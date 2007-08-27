@@ -204,10 +204,45 @@ class Alkane {
       return longestChain;
     }
 
+    private List<Carbon> branchCarbons(
+      Carbon trunkCarbon,
+      Carbon branchCarbon) {
+
+      ArrayList<Carbon> queue = new ArrayList<Carbon>();
+
+      ArrayList<Carbon> traversed = new ArrayList<Carbon>();
+      traversed.add(trunkCarbon);
+
+      queue.add(branchCarbon);
+
+      while ( !queue.isEmpty() ) {
+
+        Carbon current = queue.remove(0);
+
+        for ( Carbon neighbor : current.neighbors() )
+          if ( !traversed.contains(neighbor) )
+            queue.add(neighbor);
+
+        traversed.add(current);
+      }
+
+      traversed.remove(trunkCarbon);
+      return traversed;
+    }
+
     private String alkylGroupName( Carbon trunkCarbon, Carbon branchCarbon ) {
-      return iupacNames[
-        longestChain(trunkCarbon, branchCarbon).size()
-      ] + "yl";
+
+      List<Carbon>   alkylGroup = branchCarbons(trunkCarbon, branchCarbon),
+                   longestChain = longestChain(trunkCarbon, branchCarbon);
+
+      if ( alkylGroup.size() == longestChain.size() )
+        return iupacNames[ longestChain.size() ] + "yl";
+
+      String prefix = sideChains(longestChain, trunkCarbon);
+
+      return "(" + prefix
+                 + iupacNames[ longestChain.size() ].toLowerCase()
+                 + "yl)";
     }
 
     private String[] iupacNameList() {
@@ -281,33 +316,29 @@ class Alkane {
       return sb.toString();
     }
 
-    public String iupacName() {
-      
-      if ( iupacNames == null )
-        iupacNames = iupacNameList();
+    private String sideChains(List<Carbon> chain) {
+      return sideChains(chain, null);
+    }
 
-      List<Carbon> longestChain = longestChain();
-      
-      if ( carbons.size() == longestChain.size() )
-         return iupacNames[ carbons.size() ] + "ane";
-
+    private String sideChains(List<Carbon> chain, Carbon trunkCarbon) {
       LinkedHashMap<String, ArrayList<Integer>> sideChains
         = new LinkedHashMap<String, ArrayList<Integer>>();
+
       int position = 0;
 
-      for ( Carbon chainCarbon : longestChain ) {
-         position++;
+      for ( Carbon chainCarbon : chain ) {
+        position++;
 
-         for ( Carbon neighbor : chainCarbon.neighbors() ) {
-            if ( !longestChain.contains(neighbor) ) {
-              String alkyl = alkylGroupName(chainCarbon, neighbor);
+        for ( Carbon neighbor : chainCarbon.neighbors() ) {
+          if ( !neighbor.equals(trunkCarbon) && !chain.contains(neighbor) ) {
+            String alkyl = alkylGroupName(chainCarbon, neighbor);
 
-              if ( !sideChains.containsKey(alkyl) )
-                sideChains.put(alkyl, new ArrayList<Integer>());
+            if ( !sideChains.containsKey(alkyl) )
+              sideChains.put(alkyl, new ArrayList<Integer>());
 
-              sideChains.get(alkyl).add(new Integer(position));
-            }
-         }
+            sideChains.get(alkyl).add(new Integer(position));
+          }
+        }
       }
 
       ArrayList<String> sideChainsOrder = new ArrayList<String>(
@@ -319,34 +350,51 @@ class Alkane {
         sideChainsOrder.get(0) );
       boolean isReversed = false;
 
-      for ( int i = 0; i < firstSideChainPositions.size(); i++ ) {
-        int pos             = firstSideChainPositions.get(i),
-            posFromOtherEnd = 1 + longestChain.size()
-                              - firstSideChainPositions.get(
-                                  firstSideChainPositions.size() - 1 - i );
+      if ( trunkCarbon == null ) {
+        for ( int i = 0; i < firstSideChainPositions.size(); i++ ) {
+          int pos             = firstSideChainPositions.get(i),
+              posFromOtherEnd = 1 + chain.size()
+                                - firstSideChainPositions.get(
+                                    firstSideChainPositions.size() - 1 - i );
 
-        if ( pos > posFromOtherEnd )
-          isReversed = true;
-        if ( pos < posFromOtherEnd )
-          break;
+          if ( pos > posFromOtherEnd )
+            isReversed = true;
+          if ( pos < posFromOtherEnd )
+            break;
+        }
       }
 
-      String prefix = "";
+      String description = "";
       for ( String alkyl : sideChainsOrder ) {
         ArrayList<Integer> positions = sideChains.get(alkyl);
 
         String posList = commaSeparatedList(
-          positions, isReversed, longestChain.size() );
+          positions, isReversed, chain.size() );
 
         String fullName = positions.size() > 1
           ? multipliers[positions.size()] + alkyl.toLowerCase()
           : alkyl;
 
-        if ( "".equals(prefix) )
-          prefix += posList + "-" + fullName;
+        if ( "".equals(description) )
+          description += posList + "-" + fullName;
         else
-          prefix += "-" + posList + "-" + fullName.toLowerCase();
+          description += "-" + posList + "-" + fullName.toLowerCase();
       }
+
+      return description;
+    }
+
+    public String iupacName() {
+      
+      if ( iupacNames == null )
+        iupacNames = iupacNameList();
+
+      List<Carbon> longestChain = longestChain();
+      
+      if ( carbons.size() == longestChain.size() )
+         return iupacNames[ carbons.size() ] + "ane";
+
+      String prefix = sideChains(longestChain);
 
       return prefix + iupacNames[ longestChain.size() ].toLowerCase() + "ane";
     }
