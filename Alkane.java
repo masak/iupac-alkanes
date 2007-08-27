@@ -35,6 +35,10 @@ class Alkane {
               parenLevel = 1;
 
             while ( parenLevel > 0 ) {
+              if ( endParenPos >= desc.length()-1 )
+                throw new IllegalArgumentException( "Too few )'s: '"
+                                                    + desc + "':" + pos );
+
               switch ( desc.charAt( ++endParenPos ) ) {
                 case '(': parenLevel++; break;
                 case ')': parenLevel--; break;
@@ -55,7 +59,7 @@ class Alkane {
         }
         else {
           throw new IllegalArgumentException( "Strange description: '"
-                                              + desc + "'" + pos );
+                                              + desc + "':" + pos );
         }
       }
 
