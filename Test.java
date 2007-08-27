@@ -48,6 +48,24 @@ public abstract class Test {
     public void ok( boolean success ) {
         ok( success, "" );
     }
-   
-    public abstract void test();
+
+    public void test() {
+      runTests();
+
+      if (testsRun != testsPlanned)
+        System.out.printf( "Warning: %d tests planned but %d run.\n",
+                           testsPlanned, testsRun );
+
+      System.out.printf( "%d tests successful (%d%%)",
+                         successfulTests, 100*successfulTests/testsPlanned );
+
+      if (successfulTests < testsRun)
+        System.out.printf( ", %d failed (%d%%)",
+                           testsRun-successfulTests,
+                           100*(testsRun-successfulTests)/testsPlanned );
+
+      System.out.println( "." );
+    }
+
+    public abstract void runTests();
 }

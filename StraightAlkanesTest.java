@@ -4,7 +4,7 @@ class StraightAlkanesTest extends AlkanesTest {
          super( name, testsPlanned );
       }
 
-      public void test() {
+      public void runTests() {
          String[] names = new String[] {
             "methane", "ethane", "propane", "buthane",
             "pentane", "hexane", "heptane", "octane",

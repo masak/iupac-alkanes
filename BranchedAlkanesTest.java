@@ -4,7 +4,7 @@ class BranchedAlkanesTest extends AlkanesTest {
          super( name, testsPlanned );
       }
 
-      public void test() {
+      public void runTests() {
          is( new Alkane("C(C(C(CC(C))))").iupacName(),
              "3-Methylpentane",
              "Side chains and longest chain name the alkyl" );
@@ -24,7 +24,7 @@ class BranchedAlkanesTest extends AlkanesTest {
 
       public static void main( String args[] ) {
          new BranchedAlkanesTest( "Branched alkanes",
-                                  3
+                                  4
             ).test();
       }
 }
