@@ -23,18 +23,21 @@ class BranchedAlkanesTest extends AlkanesTest {
 
          is( new Alkane("C(C(C(C(C(C(C(C(CC(C(C(C))))"
                         + "C(C(C(C(C(C))))))))))))").iupacName(),
-             "6-(1-Methylpentyl)dodecane",
-             "Branches are numbered from the trunk out along longest chain I" );
+             "7-(1-Methylpentyl)tridecane",
+             "Branches are numbered from the trunk out along longest chain I"
+           );
          
          is( new Alkane("C(C(C(C(C(C(C(C(C(CC(C(C))))"
                         + "C(C(C(C(C(C))))))))))))").iupacName(),
-             "6-(2-Methylpentyl)dodecane",
-             "Branches are numbered from the trunk out along longest chain II" );
+             "7-(2-Methylpentyl)tridecane",
+             "Branches are numbered from the trunk out along longest chain II"
+           );
          
-         is( new Alkane("C(C(C(C(C(C(C(C(C(C(C(CC))))"
-                        + "C(C(C(C(C(C))))))))))))").iupacName(),
-             "6-(5-Methylhexyl)dodecane",
-             "Branches are numbered from the trunk out along longest chain III" );
+         is( new Alkane("C(C(C(C(C(C(C(C(C(C(C(C(C(CC)))))"
+                        + "C(C(C(C(C(C(C))))))))))))))").iupacName(),
+             "8-(5-Methylhexyl)pentadecane",
+             "Branches are numbered from the trunk out along longest chain III"
+           );
       }
 
       public static void main( String args[] ) {
