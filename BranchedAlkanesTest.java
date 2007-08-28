@@ -69,11 +69,11 @@ class BranchedAlkanesTest extends AlkanesTest {
           "Isobutyl" );
          
       is( new Alkane( inMiddleOf(4, "-C(CC(C))") ).iupacName(),
-          "5-sec-butylnonane",
+          "5-sec-Butylnonane",
           "sec-butyl" );
          
       is( new Alkane( inMiddleOf(5, "-C(CCC)") ).iupacName(),
-          "6-tert-butylundecane",
+          "6-tert-Butylundecane",
           "tert-butyl" );
          
       is( new Alkane( inMiddleOf(6, "-C(C(C(CC)))") ).iupacName(),
