@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 
 class Alkane {
@@ -15,6 +15,7 @@ class Alkane {
       "Hexa",   "Hepta", "Octa", "Nona",  "Deca",
       "Undeca",
     };
+    private static HashMap<String, String> commonAlkylNames = null;
 
     public Alkane( String description ) {
       this.description = description;
@@ -234,6 +235,26 @@ class Alkane {
       return traversed;
     }
 
+    private HashMap<String, String> commonAlkylNamesHashMap() {
+      HashMap<String, String> names = new HashMap<String, String>();
+
+      String[][] pairs = new String[][] {
+        { "1-Methylethyl",      "Isopropyl"   },
+        { "2-Methylpropyl",     "Isobutyl"    },
+        { "1-Methylpropyl",     "sec-Butyl"   },
+        { "1,1-Dimethylethyl",  "tert-Butyl"  },
+        { "3-Methylbuthyl",     "Isopentyl"   },
+        { "2,2-Dimethylpropyl", "Neopentyl"   },
+        { "1,1-Dimethylpropyl", "tert-Pentyl" },
+        { "4-Methylpentyl",     "Isohexyl"    },
+      };
+
+      for ( String[] pair : pairs )
+        names.put(pair[0], pair[1]);
+
+      return names;
+    }
+
     private String alkylGroupName( Carbon trunkCarbon, Carbon branchCarbon ) {
 
       List<Carbon>   alkylGroup = branchCarbons(trunkCarbon, branchCarbon),
@@ -244,9 +265,18 @@ class Alkane {
 
       String prefix = sideChains(longestChain, trunkCarbon);
 
-      return "(" + prefix
-                 + iupacNames[ longestChain.size() ].toLowerCase()
-                 + "yl)";
+      if ( commonAlkylNames == null )
+        commonAlkylNames = commonAlkylNamesHashMap();
+
+      String  name = prefix
+                     + iupacNames[ longestChain.size() ].toLowerCase()
+                     + "yl",
+        commonName = commonAlkylNames.get(name);
+
+      if ( commonName != null )
+        return commonName;
+
+      return "(" + name + ")";
     }
 
     private String[] iupacNameList() {
@@ -325,8 +355,8 @@ class Alkane {
     }
 
     private String sideChains(List<Carbon> chain, Carbon trunkCarbon) {
-      LinkedHashMap<String, ArrayList<Integer>> sideChains
-        = new LinkedHashMap<String, ArrayList<Integer>>();
+      HashMap<String, ArrayList<Integer>> sideChains
+        = new HashMap<String, ArrayList<Integer>>();
 
       int position = 0;
 
