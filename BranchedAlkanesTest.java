@@ -10,7 +10,7 @@ class BranchedAlkanesTest extends AlkanesTest {
       for ( int i = 0; i < halfLength + 1; i++ )
         sb.append("C(");
 
-      sb.append(alkyl.substring(1));
+      sb.append( alkyl.substring(1) );
 
       for ( int i = 0; i < halfLength - 1; i++ )
         sb.append("C(");
@@ -23,6 +23,9 @@ class BranchedAlkanesTest extends AlkanesTest {
     }
 
     public void runTests() {
+      // These tests are heavily based on
+      // http://www.acdlabs.com/iupac/nomenclature/79/r79_36.htm
+
       is( new Alkane("C(C(C(CC(C))))").iupacName(),
           "3-Methylpentane",
           "Side chains and longest chain name the alkyl" );
@@ -91,11 +94,29 @@ class BranchedAlkanesTest extends AlkanesTest {
       is( new Alkane( inMiddleOf(6, "-C(C(C(C(CC))))") ).iupacName(),
           "7-Isohexyltridecane",
           "Isohexyl" );
+
+      is( new Alkane( "C(C(C(C(C(C)C(CCC(C(C)))))))" ).iupacName(),
+          "4-Ethyl-3,3-dimethylheptane",
+          "Simple radicals are alphabetized before prefixes are inserted" );
+
+      is( new Alkane( "C(C(C(C(C(C(C))C(C("
+                      + "C(CC(C(CC(C(C)))))"
+                      + "C(C(C(C(C(C)))))))))))" ).iupacName(),
+          "7-(1,2-Dimethylpentyl)-5-ethyltridecane",
+          "Complex radicals are alphabethized by their complete names" );
+
+      is( new Alkane( "C(C(C(C(C(C("
+                      + "C(CC(C(C(C))))"
+                      + "C(C("
+                      + "C(C(CC(C(C))))"
+                      + "C(C(C(C(C))))))))))))" ).iupacName(),
+          "6-(1-Methylbutyl)-8-(2-methylbuthyl)tridecane",
+          "Complex radicals with same name give priority to lowest locant" );
     }
 
     public static void main( String args[] ) {
       new BranchedAlkanesTest( "Branched alkanes",
-                               15
+                               18
         ).test();
     }
 }
