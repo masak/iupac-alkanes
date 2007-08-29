@@ -95,7 +95,7 @@ class BranchedAlkanesTest extends AlkanesTest {
           "7-Isohexyltridecane",
           "Isohexyl" );
 
-      is( new Alkane( "C(C(C(C(C(C)C(CCC(C(C)))))))" ).iupacName(),
+      is( new Alkane( "C(C(C(C(C(C))C(CCC(C)))))" ).iupacName(),
           "4-Ethyl-3,3-dimethylheptane",
           "Simple radicals are alphabetized before prefixes are inserted" );
 
