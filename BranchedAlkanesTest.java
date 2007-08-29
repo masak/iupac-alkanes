@@ -22,7 +22,7 @@ class BranchedAlkanesTest extends AlkanesTest {
       return sb.toString();
     }
 
-    public void runTests() {
+    protected void runTests() {
       // These tests are heavily based on
       // http://www.acdlabs.com/iupac/nomenclature/79/r79_36.htm
 

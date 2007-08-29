@@ -67,5 +67,5 @@ public abstract class Test {
       System.out.println( "." );
     }
 
-    public abstract void runTests();
+    protected abstract void runTests();
 }
