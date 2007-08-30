@@ -120,9 +120,9 @@ class Alkane {
       return leaves;
     }
 
-    private ArrayList<ArrayList<Carbon>>
-    extendChains( ArrayList<ArrayList<Carbon>> chains,
-                  ArrayList<Carbon> traversed ) {
+    private ArrayList<ArrayList<Carbon>> extendChains(
+      ArrayList<ArrayList<Carbon>> chains,
+      ArrayList<Carbon> traversed ) {
 
       ArrayList< ArrayList<Carbon> > newChains
         = new ArrayList< ArrayList<Carbon> >();
@@ -379,22 +379,32 @@ class Alkane {
         sideChains.keySet() );
       Collections.sort( sideChainsOrder );
 
-      // hack
-      ArrayList<Integer> firstSideChainPositions = sideChains.get(
-        sideChainsOrder.get(0) );
       boolean isReversed = false;
 
       if ( trunkCarbon == null ) {
-        for ( int i = 0; i < firstSideChainPositions.size(); i++ ) {
-          int pos             = firstSideChainPositions.get(i),
-              posFromOtherEnd = 1 + chain.size()
-                                - firstSideChainPositions.get(
-                                    firstSideChainPositions.size() - 1 - i );
+        ArrayList<Integer>  forwardNumbering = new ArrayList<Integer>(),
+                           backwardNumbering = new ArrayList<Integer>();
 
-          if ( pos > posFromOtherEnd )
+        for ( ArrayList<Integer> sideChain : sideChains.values() ) {
+          for ( int i = 0; i < sideChain.size(); i++ ) {
+            int pos             = sideChain.get(i),
+                posFromOtherEnd = 1 + chain.size()
+                                  - sideChain.get( sideChain.size() - 1 - i );
+
+            forwardNumbering.add(pos);
+            backwardNumbering.add(posFromOtherEnd);
+          }
+        }
+
+        for ( int i = 0; i < forwardNumbering.size(); i++ ) {
+          if ( forwardNumbering.get(i) > backwardNumbering.get(i) ) {
             isReversed = true;
-          if ( pos < posFromOtherEnd )
             break;
+          }
+          else if ( forwardNumbering.get(i) < backwardNumbering.get(i) ) {
+            isReversed = false;
+            break;
+          }
         }
       }
 
