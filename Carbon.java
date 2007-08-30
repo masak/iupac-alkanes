@@ -1,13 +1,14 @@
 import java.util.ArrayList;
+import java.util.List;
 
 class Carbon {
 
-    private ArrayList<Carbon> neighbors = new ArrayList<Carbon>();
+    private List<Carbon> neighbors = new ArrayList<Carbon>();
 
     public Carbon() {
     }
 
-    public Carbon( ArrayList<Carbon> neighbors ) {
+    public Carbon( List<Carbon> neighbors ) {
       this.neighbors = neighbors;
 
       for ( Carbon neighbor : neighbors )
@@ -18,7 +19,7 @@ class Carbon {
       neighbors.add( neighbor );
     }
 
-    public ArrayList<Carbon> neighbors() {
+    public List<Carbon> neighbors() {
       return new ArrayList<Carbon>(neighbors);
     }
 }

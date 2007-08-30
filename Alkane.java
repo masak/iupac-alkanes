@@ -6,7 +6,7 @@ import java.util.List;
 class Alkane {
 
     private String description;
-    private ArrayList<Carbon> carbons = new ArrayList<Carbon>();
+    private List<Carbon> carbons = new ArrayList<Carbon>();
 
     private static String[] iupacNames = null;
     private static String[] multipliers = new String[] {
@@ -23,8 +23,8 @@ class Alkane {
       build( description );
     }
 
-    private ArrayList<Carbon> build( String desc ) {
-      ArrayList<Carbon> accumCarbons = new ArrayList<Carbon>();
+    private List<Carbon> build( String desc ) {
+      List<Carbon> accumCarbons = new ArrayList<Carbon>();
 
       for ( int pos = 0; pos < desc.length(); pos++ ) {
         if ( desc.charAt( pos ) == 'C' ) {
@@ -72,7 +72,7 @@ class Alkane {
     }
 
     public String normalization() {
-      ArrayList<String> descriptions = new ArrayList<String>();
+      List<String> descriptions = new ArrayList<String>();
 
       if ( carbons.size() == 1 )
         return "C";
@@ -85,9 +85,9 @@ class Alkane {
     }
 
     private String traverse( Carbon node,
-                             ArrayList<Carbon> alreadyTraversed ) {
+                             List<Carbon> alreadyTraversed ) {
 
-      ArrayList<String> descriptions = new ArrayList<String>();
+      List<String> descriptions = new ArrayList<String>();
 
       alreadyTraversed.add(node);
 
@@ -110,8 +110,8 @@ class Alkane {
       return sb.toString();
     }
 
-    private ArrayList<Carbon> leaves() {
-      ArrayList<Carbon> leaves = new ArrayList<Carbon>();
+    private List<Carbon> leaves() {
+      List<Carbon> leaves = new ArrayList<Carbon>();
 
       for ( Carbon carbon : this.carbons )
         if ( carbon.neighbors().size() == 1 )
@@ -120,21 +120,21 @@ class Alkane {
       return leaves;
     }
 
-    private ArrayList<ArrayList<Carbon>> extendChains(
-      ArrayList<ArrayList<Carbon>> chains,
-      ArrayList<Carbon> traversed ) {
+    private List<List<Carbon>> extendChains(
+      List<List<Carbon>> chains,
+      List<Carbon> traversed ) {
 
-      ArrayList< ArrayList<Carbon> > newChains
-        = new ArrayList< ArrayList<Carbon> >();
+      List< List<Carbon> > newChains
+        = new ArrayList< List<Carbon> >();
 
-      for ( ArrayList<Carbon> currentChain : chains ) {
+      for ( List<Carbon> currentChain : chains ) {
 
         Carbon currentNode = currentChain.get(currentChain.size() - 1);
         traversed.add(currentNode);
 
         for ( Carbon neighbor : currentNode.neighbors() ) {
           if ( !traversed.contains(neighbor) ) {
-            ArrayList<Carbon> longerChain
+            List<Carbon> longerChain
               = new ArrayList<Carbon>(currentChain);
 
             longerChain.add(neighbor);
@@ -151,22 +151,22 @@ class Alkane {
       if (carbons.isEmpty())
         return new ArrayList<Carbon>();
 
-      ArrayList<Carbon> longestChain = new ArrayList<Carbon>();
+      List<Carbon> longestChain = new ArrayList<Carbon>();
       longestChain.add( carbons.get(0) );
 
       for ( Carbon leaf : leaves() ) {
-        ArrayList< ArrayList<Carbon> > queue
-          = new ArrayList< ArrayList<Carbon> >();
-        ArrayList<Carbon> traversed = new ArrayList<Carbon>();
+        List< List<Carbon> > queue
+          = new ArrayList< List<Carbon> >();
+        List<Carbon> traversed = new ArrayList<Carbon>();
 
-        ArrayList<Carbon> seed = new ArrayList<Carbon>();
+        List<Carbon> seed = new ArrayList<Carbon>();
         seed.add(leaf);
         queue.add(seed);
 
         int length = 0;
         while ( !queue.isEmpty() ) {
 
-          ArrayList< ArrayList<Carbon> > newChains
+          List< List<Carbon> > newChains
             = extendChains(queue, traversed);
 
           if ( longestChain.size() < queue.get(0).size() )
@@ -182,23 +182,22 @@ class Alkane {
     private List<Carbon> longestChain(
        Carbon trunkCarbon, Carbon branchCarbon) {
 
-      ArrayList<Carbon> longestChain = new ArrayList<Carbon>();
+      List<Carbon> longestChain = new ArrayList<Carbon>();
 
-      ArrayList< ArrayList<Carbon> > queue
-        = new ArrayList< ArrayList<Carbon> >();
+      List< List<Carbon> > queue
+        = new ArrayList< List<Carbon> >();
 
-      ArrayList<Carbon> traversed = new ArrayList<Carbon>();
+      List<Carbon> traversed = new ArrayList<Carbon>();
       traversed.add(trunkCarbon);
 
-      ArrayList<Carbon> seed = new ArrayList<Carbon>();
+      List<Carbon> seed = new ArrayList<Carbon>();
       seed.add(branchCarbon);
       queue.add(seed);
 
       int length = 0;
       while ( !queue.isEmpty() ) {
 
-        ArrayList< ArrayList<Carbon> > newChains
-          = extendChains(queue, traversed);
+        List< List<Carbon> > newChains = extendChains(queue, traversed);
 
         if ( longestChain.size() < queue.get(0).size() )
           longestChain = queue.get(0);
@@ -213,9 +212,9 @@ class Alkane {
       Carbon trunkCarbon,
       Carbon branchCarbon) {
 
-      ArrayList<Carbon> queue = new ArrayList<Carbon>();
+      List<Carbon> queue = new ArrayList<Carbon>();
 
-      ArrayList<Carbon> traversed = new ArrayList<Carbon>();
+      List<Carbon> traversed = new ArrayList<Carbon>();
       traversed.add(trunkCarbon);
 
       queue.add(branchCarbon);
@@ -287,7 +286,7 @@ class Alkane {
           "Hept", "Oct",  "Non",
         };
 
-        ArrayList<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<String>();
         for ( int i = 0; i < lowNames.length; i++ )
           names.add( lowNames[i] );
 
@@ -321,7 +320,7 @@ class Alkane {
     }
 
     private String commaSeparatedList(
-      ArrayList<Integer> list,
+      List<Integer> list,
       boolean isReversed,
       int lengthOfLongChain ) {
 
@@ -355,8 +354,8 @@ class Alkane {
     }
 
     private String sideChains(List<Carbon> chain, Carbon trunkCarbon) {
-      HashMap<String, ArrayList<Integer>> sideChains
-        = new HashMap<String, ArrayList<Integer>>();
+      HashMap<String, List<Integer>> sideChains
+        = new HashMap<String, List<Integer>>();
 
       int position = 0;
 
@@ -375,17 +374,17 @@ class Alkane {
         }
       }
 
-      ArrayList<String> sideChainsOrder = new ArrayList<String>(
+      List<String> sideChainsOrder = new ArrayList<String>(
         sideChains.keySet() );
       Collections.sort( sideChainsOrder );
 
       boolean isReversed = false;
 
       if ( trunkCarbon == null ) {
-        ArrayList<Integer>  forwardNumbering = new ArrayList<Integer>(),
-                           backwardNumbering = new ArrayList<Integer>();
+        List<Integer>  forwardNumbering = new ArrayList<Integer>(),
+                      backwardNumbering = new ArrayList<Integer>();
 
-        for ( ArrayList<Integer> sideChain : sideChains.values() ) {
+        for ( List<Integer> sideChain : sideChains.values() ) {
           for ( int i = 0; i < sideChain.size(); i++ ) {
             int pos             = sideChain.get(i),
                 posFromOtherEnd = 1 + chain.size()
@@ -410,7 +409,7 @@ class Alkane {
 
       String description = "";
       for ( String alkyl : sideChainsOrder ) {
-        ArrayList<Integer> positions = sideChains.get(alkyl);
+        List<Integer> positions = sideChains.get(alkyl);
 
         String posList = commaSeparatedList(
           positions, isReversed, chain.size() );

@@ -99,9 +99,9 @@ class BranchedAlkanesTest extends AlkanesTest {
           "4-Ethyl-3,3-dimethylheptane",
           "Simple radicals are alphabetized before prefixes are inserted" );
 
-      is( new Alkane( "C(C(C(C(C(C(C))C(C("
-                      + "C(CC(C(CC(C(C)))))"
-                      + "C(C(C(C(C(C)))))))))))" ).iupacName(),
+      is( new Alkane( "C(C(C(C(C(C(C)C(C("
+                      + "C(CC(CC(C(C(C)))))"
+                      + "C(C(C(C(C(C))))))))))))" ).iupacName(),
           "7-(1,2-Dimethylpentyl)-5-ethyltridecane",
           "Complex radicals are alphabetized by their complete names" );
 
