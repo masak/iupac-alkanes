@@ -1,7 +1,10 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 class Alkane {
 
@@ -146,17 +149,18 @@ class Alkane {
       return newChains;
     }
 
-    private List<Carbon> longestChain() {
+    private List<List<Carbon>> longestChains() {
 
       if (carbons.isEmpty())
-        return new ArrayList<Carbon>();
+        return new ArrayList<List<Carbon>>();
 
-      List<Carbon> longestChain = new ArrayList<Carbon>();
-      longestChain.add( carbons.get(0) );
+      List<List<Carbon>> longestChains = new ArrayList<List<Carbon>>();
+      List<Carbon> singleCarbonChain = new ArrayList<Carbon>();
+      singleCarbonChain.add( carbons.get(0) );
+      longestChains.add( singleCarbonChain );
 
       for ( Carbon leaf : leaves() ) {
-        List< List<Carbon> > queue
-          = new ArrayList< List<Carbon> >();
+        List<List<Carbon>> queue = new ArrayList<List<Carbon>>();
         List<Carbon> traversed = new ArrayList<Carbon>();
 
         List<Carbon> seed = new ArrayList<Carbon>();
@@ -166,26 +170,32 @@ class Alkane {
         int length = 0;
         while ( !queue.isEmpty() ) {
 
-          List< List<Carbon> > newChains
-            = extendChains(queue, traversed);
+          List<List<Carbon>> newChains = extendChains(queue, traversed);
 
-          if ( longestChain.size() < queue.get(0).size() )
-            longestChain = queue.get(0);
+          if ( queue.get(0).size() > longestChains.get(0).size() ) {
+            longestChains.clear();
+            longestChains.addAll(queue);
+          }
+          else if ( queue.get(0).size() == longestChains.get(0).size() ) {
+            longestChains.addAll(queue);
+          }
 
           queue = newChains;
         }
       }
 
-      return longestChain;
+      return longestChains;
     }     
 
-    private List<Carbon> longestChain(
+    private List<List<Carbon>> longestChains(
        Carbon trunkCarbon, Carbon branchCarbon) {
 
-      List<Carbon> longestChain = new ArrayList<Carbon>();
+      List<List<Carbon>> longestChains = new ArrayList<List<Carbon>>();
+      List<Carbon> singleCarbonChain = new ArrayList<Carbon>();
+      singleCarbonChain.add( carbons.get(0) );
+      longestChains.add( singleCarbonChain );
 
-      List< List<Carbon> > queue
-        = new ArrayList< List<Carbon> >();
+      List<List<Carbon>> queue = new ArrayList<List<Carbon>>();
 
       List<Carbon> traversed = new ArrayList<Carbon>();
       traversed.add(trunkCarbon);
@@ -197,15 +207,20 @@ class Alkane {
       int length = 0;
       while ( !queue.isEmpty() ) {
 
-        List< List<Carbon> > newChains = extendChains(queue, traversed);
+        List<List<Carbon>> newChains = extendChains(queue, traversed);
 
-        if ( longestChain.size() < queue.get(0).size() )
-          longestChain = queue.get(0);
+        if ( queue.get(0).size() > longestChains.get(0).size() ) {
+          longestChains.clear();
+          longestChains.addAll(queue);
+        }
+        else if ( queue.get(0).size() == longestChains.get(0).size() ) {
+          longestChains.addAll(queue);
+        }
 
         queue = newChains;
       }
 
-      return longestChain;
+      return longestChains;
     }
 
     private List<Carbon> branchCarbons(
@@ -256,8 +271,11 @@ class Alkane {
 
     private String alkylGroupName( Carbon trunkCarbon, Carbon branchCarbon ) {
 
-      List<Carbon>   alkylGroup = branchCarbons(trunkCarbon, branchCarbon),
-                   longestChain = longestChain(trunkCarbon, branchCarbon);
+      List<Carbon>
+        alkylGroup
+          = branchCarbons(trunkCarbon, branchCarbon),
+        longestChain
+          = longestChains(trunkCarbon, branchCarbon).get(0);
 
       if ( alkylGroup.size() == longestChain.size() )
         return iupacNames[ longestChain.size() ] + "yl";
@@ -319,34 +337,40 @@ class Alkane {
         return names.toArray( new String[0] );
     }
 
-    private String commaSeparatedList(
-      List<Integer> list,
-      boolean isReversed,
-      int lengthOfLongChain ) {
+    private String commaSeparatedList(List<Integer> list) {
 
       StringBuilder sb = new StringBuilder();
 
       boolean first = true;
-      if (isReversed) {
-        for ( int i = list.size()-1; i >= 0; i-- ) {
-          if ( !first )
-            sb.append( ',' );
-          first = false;
-
-          sb.append( 1 + lengthOfLongChain - list.get(i) );
-        }
-      }
-      else {
-        for ( Integer item : list ) {
-          if ( !first )
-            sb.append( ',' );
-          first = false;
-
-          sb.append(item);
-        }
+      for ( Integer item : list ) {
+        if ( !first )
+          sb.append( ',' );
+        first = false;
+        
+        sb.append(item);
       }
 
       return sb.toString();
+    }
+
+    private List<Integer> numbering(List<Carbon> chain) {
+      return numbering(chain, null);
+    }
+
+    private List<Integer> numbering(List<Carbon> chain, Carbon trunkCarbon) {
+      List<Integer> numbering = new ArrayList<Integer>();
+
+      int position = 0;
+
+      for ( Carbon chainCarbon : chain ) {
+        position++;
+
+        for ( Carbon neighbor : chainCarbon.neighbors() )
+          if ( !neighbor.equals(trunkCarbon) && !chain.contains(neighbor) )
+            numbering.add(new Integer(position));
+      }
+
+      return numbering;
     }
 
     private String sideChains(List<Carbon> chain) {
@@ -378,41 +402,11 @@ class Alkane {
         sideChains.keySet() );
       Collections.sort( sideChainsOrder );
 
-      boolean isReversed = false;
-
-      if ( trunkCarbon == null ) {
-        List<Integer>  forwardNumbering = new ArrayList<Integer>(),
-                      backwardNumbering = new ArrayList<Integer>();
-
-        for ( List<Integer> sideChain : sideChains.values() ) {
-          for ( int i = 0; i < sideChain.size(); i++ ) {
-            int pos             = sideChain.get(i),
-                posFromOtherEnd = 1 + chain.size()
-                                  - sideChain.get( sideChain.size() - 1 - i );
-
-            forwardNumbering.add(pos);
-            backwardNumbering.add(posFromOtherEnd);
-          }
-        }
-
-        for ( int i = 0; i < forwardNumbering.size(); i++ ) {
-          if ( forwardNumbering.get(i) > backwardNumbering.get(i) ) {
-            isReversed = true;
-            break;
-          }
-          else if ( forwardNumbering.get(i) < backwardNumbering.get(i) ) {
-            isReversed = false;
-            break;
-          }
-        }
-      }
-
       String description = "";
       for ( String alkyl : sideChainsOrder ) {
         List<Integer> positions = sideChains.get(alkyl);
 
-        String posList = commaSeparatedList(
-          positions, isReversed, chain.size() );
+        String posList = commaSeparatedList(positions);
 
         String fullName = positions.size() > 1
           ? multipliers[positions.size()] + alkyl.toLowerCase()
@@ -427,19 +421,54 @@ class Alkane {
       return description;
     }
 
+    private List<List<Integer>> sort(Set<List<Integer>> set) {
+      List<List<Integer>> sorted = new ArrayList<List<Integer>>(set);
+
+      Collections.sort(sorted, new Comparator() {
+            public int compare(Object numbering1, Object numbering2) {
+              List<Integer> n1 = (List<Integer>) numbering1,
+                            n2 = (List<Integer>) numbering2;
+
+              if ( n1.size() != n2.size() )
+                return n1.size() - n2.size();
+
+              for ( int i = 0; i < n1.size(); i++ )
+                if ( n1.get(i).compareTo(n2.get(i)) != 0 )
+                  return n1.get(i) - n2.get(i);
+            
+              return 0;
+            }
+        });
+
+      return sorted;
+    }
+
     public String iupacName() {
       
       if ( iupacNames == null )
         iupacNames = iupacNameList();
 
-      List<Carbon> longestChain = longestChain();
-      
-      if ( carbons.size() == longestChain.size() )
-         return iupacNames[ carbons.size() ] + "ane";
+      Map<List<Integer>, List<Carbon>> numberings
+        = new HashMap<List<Integer>, List<Carbon>>();
 
-      String prefix = sideChains(longestChain);
+      List<List<Carbon>> longestChains = longestChains();
 
-      return prefix + iupacNames[ longestChain.size() ].toLowerCase() + "ane";
+      if ( carbons.size() == longestChains.get(0).size() )
+        return iupacNames[ carbons.size() ] + "ane";
+
+      for ( List<Carbon> chain : longestChains )
+        numberings.put( numbering(chain), chain );
+
+      List<List<Integer>> sortedNumberings = sort( numberings.keySet() );
+
+      List<Integer> bestNumbering = sortedNumberings.get(0);
+      List<Carbon> bestChain = numberings.get( bestNumbering );
+
+      String prefix = sideChains(bestChain);
+
+      return prefix
+             + iupacNames[ bestChain.size() ].toLowerCase()
+             + "ane";
     }
 
     public boolean equals( Object o ) {
