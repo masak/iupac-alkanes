@@ -103,7 +103,7 @@ class BranchedAlkanesTest extends AlkanesTest {
                       + "C(CC(C(CC(C(C)))))"
                       + "C(C(C(C(C(C)))))))))))" ).iupacName(),
           "7-(1,2-Dimethylpentyl)-5-ethyltridecane",
-          "Complex radicals are alphabethized by their complete names" );
+          "Complex radicals are alphabetized by their complete names" );
 
       is( new Alkane( "C(C(C(C(C(C("
                       + "C(CC(C(C(C))))"
