@@ -257,7 +257,7 @@ class Alkane {
         { "2-Methylpropyl",     "Isobutyl"    },
         { "1-Methylpropyl",     "sec-Butyl"   },
         { "1,1-Dimethylethyl",  "tert-Butyl"  },
-        { "3-Methylbuthyl",     "Isopentyl"   },
+        { "3-Methylbutyl",      "Isopentyl"   },
         { "2,2-Dimethylpropyl", "Neopentyl"   },
         { "1,1-Dimethylpropyl", "tert-Pentyl" },
         { "4-Methylpentyl",     "Isohexyl"    },
@@ -300,7 +300,7 @@ class Alkane {
         String[] lowNames = new String[] {
           "",
           "Meth", "Eth",  "Prop",
-          "Buth", "Pent", "Hex",
+          "But",  "Pent", "Hex",
           "Hept", "Oct",  "Non",
         };
 
