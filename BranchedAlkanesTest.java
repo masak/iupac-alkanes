@@ -100,17 +100,17 @@ class BranchedAlkanesTest extends AlkanesTest {
           "Simple radicals are alphabetized before prefixes are inserted" );
 
       is( new Alkane( "C(C(C(C(C(C(C)C(C("
-                      + "C(CC(CC(C(C(C)))))"
+                      + "C(CC(CC(C(C))))"
                       + "C(C(C(C(C(C))))))))))))" ).iupacName(),
           "7-(1,2-Dimethylpentyl)-5-ethyltridecane",
           "Complex radicals are alphabetized by their complete names" );
 
       is( new Alkane( "C(C(C(C(C(C("
-                      + "C(CC(C(C(C))))"
+                      + "C(CC(C(C)))"
                       + "C(C("
-                      + "C(C(CC(C(C))))"
+                      + "C(C(CC(C)))"
                       + "C(C(C(C(C))))))))))))" ).iupacName(),
-          "6-(1-Methylbutyl)-8-(2-methylbuthyl)tridecane",
+          "6-(1-Methylbutyl)-8-(2-methylbutyl)tridecane",
           "Complex radicals with same name give priority to lowest locant" );
     }
 
