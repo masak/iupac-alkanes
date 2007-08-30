@@ -22,6 +22,30 @@ class BranchedAlkanesTest extends AlkanesTest {
       return sb.toString();
     }
 
+    private String straight(int length) {
+      StringBuilder sb = new StringBuilder();
+
+      for ( int i = 0; i < length - 1; i++ )
+        sb.append("C(");
+
+      sb.append("C");
+      
+      for ( int i = 0; i < length - 1; i++ )
+        sb.append(")");
+
+      return sb.toString();
+    }
+
+    private String methane() {
+      return straight(1);
+    }
+
+    private String graft(String bigChain, int pos, String smallChain) {
+      return bigChain.substring(0, 2 * pos)
+             + smallChain
+             + bigChain.substring(2 * pos);
+    }
+
     protected void runTests() {
       // These tests are heavily based on
       // http://www.acdlabs.com/iupac/nomenclature/79/r79_36.htm
@@ -112,11 +136,26 @@ class BranchedAlkanesTest extends AlkanesTest {
                       + "C(C(C(C(C))))))))))))" ).iupacName(),
           "6-(1-Methylbutyl)-8-(2-methylbutyl)tridecane",
           "Complex radicals with same name give priority to lowest locant" );
+
+      is( new Alkane( graft(graft(straight(8),
+                                  5, methane()),
+                                  4, straight(2)) ).iupacName(),
+          "4-Ethyl-5-methyloctane",
+          "Side chains on equivalent positions are given numbers in order I"
+        );
+      
+      is( new Alkane( graft(graft(straight(8),
+                                  5, straight(3)),
+                                  4, graft(straight(2), 1, methane()))
+                    ).iupacName(),
+          "4-Isopropyl-5-propyloctane",
+          "Side chains on equivalent positions are given numbers in order II"
+        );
     }
 
     public static void main( String args[] ) {
       new BranchedAlkanesTest( "Branched alkanes",
-                               18
+                               20
         ).test();
     }
 }
