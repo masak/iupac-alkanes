@@ -1,7 +1,7 @@
 class StraightAlkanesTest extends AlkanesTest {
 
-      private StraightAlkanesTest( String name, int testsPlanned ) {
-         super( name, testsPlanned );
+      private StraightAlkanesTest() {
+         super("Straight alkanes", 100);
       }
 
       public void runTests() {
@@ -63,8 +63,6 @@ class StraightAlkanesTest extends AlkanesTest {
       }
 
       public static void main( String args[] ) {
-         new StraightAlkanesTest( "Straight alkanes",
-                                  100
-            ).test();
+         new StraightAlkanesTest().test();
       }
 }
