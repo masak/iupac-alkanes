@@ -58,13 +58,15 @@ public abstract class Test {
 
       System.out.printf( "%d tests successful (%d%%)",
                          successfulTests,
-                         (int)(100.0*successfulTests/testsPlanned + .5) );
+                         (int)(Math.round(
+                                  100.0*successfulTests/testsPlanned)) );
 
       if (successfulTests < testsRun)
         System.out.printf( ", %d failed (%d%%)",
                            testsRun-successfulTests,
-                           (int)(100.0*(testsRun-successfulTests)
-                                 / testsPlanned + .5) );
+                           (int)(Math.round(
+                                    100.0*(testsRun-successfulTests)
+                                    / testsPlanned)) );
 
       System.out.println( "." );
     }
