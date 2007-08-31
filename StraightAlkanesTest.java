@@ -6,7 +6,7 @@ class StraightAlkanesTest extends AlkanesTest {
 
       public void runTests() {
          String[] names = new String[] {
-            "methane", "ethane", "propane", "buthane",
+            "methane", "ethane", "propane", "butane",
             "pentane", "hexane", "heptane", "octane",
             "nonane", "decane",
 
