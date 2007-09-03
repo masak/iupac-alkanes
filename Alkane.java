@@ -229,7 +229,7 @@ class Alkane {
       return longestChains;
     }
 
-    private List<Carbon> branchCarbons(
+    private static List<Carbon> branchCarbons(
       Carbon trunkCarbon,
       Carbon branchCarbon) {
 
@@ -275,7 +275,9 @@ class Alkane {
       return names;
     }
 
-    private String alkylGroupName( Carbon trunkCarbon, Carbon branchCarbon ) {
+    private String alkylGroupName(
+      Carbon trunkCarbon,
+      Carbon branchCarbon) {
 
       List<Carbon>
         alkylGroup
@@ -302,7 +304,7 @@ class Alkane {
       return "(" + name + ")";
     }
 
-    private String[] iupacNameList() {
+    private static String[] iupacNameList() {
         String[] lowNames = new String[] {
           "",
           "Meth", "Eth",  "Prop",
@@ -343,7 +345,7 @@ class Alkane {
         return names.toArray( new String[0] );
     }
 
-    private String commaSeparatedList(List<Integer> list) {
+    private static String commaSeparatedList(List<Integer> list) {
 
       StringBuilder sb = new StringBuilder();
 
@@ -359,11 +361,14 @@ class Alkane {
       return sb.toString();
     }
 
-    private List<Integer> numbering(List<Carbon> chain) {
+    private static List<Integer> numbering(List<Carbon> chain) {
       return numbering(chain, null);
     }
 
-    private List<Integer> numbering(List<Carbon> chain, Carbon trunkCarbon) {
+    private static List<Integer> numbering(
+      List<Carbon> chain,
+      Carbon trunkCarbon) {
+
       List<Integer> numbering = new ArrayList<Integer>();
 
       int position = 0;
@@ -447,14 +452,15 @@ class Alkane {
       return false;
     }
 
-    private List<List<Integer>> sort(Set<List<Integer>> set) {
+    private static List<List<Integer>> sort(Set<List<Integer>> set) {
+
       List<List<Integer>> sorted = new ArrayList<List<Integer>>(set);
 
       Collections.sort(sorted, new Comparator<List<Integer>>() {
             public int compare(List<Integer> n1, List<Integer> n2) {
 
               if ( n1.size() != n2.size() )
-                return n1.size() - n2.size();
+                return n2.size() - n1.size();
 
               for ( int i = 0; i < n1.size(); i++ )
                 if ( n1.get(i).compareTo(n2.get(i)) != 0 )

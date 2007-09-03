@@ -139,11 +139,11 @@ class BranchedAlkanesTest extends AlkanesTest {
           "2,3,5-Trimethyl-4-propylheptane",
           "The chosen chain is one with the greatest number of side chains" );
 
-      String isoButyl = graftOnto(butane(), 2, methane());
+      String isoButyl = graftOnto(propane(), 2, methane());
       is( new Alkane( graftOnto(graftOnto(graftOnto(heptane(),
-                                                    4, isoButyl),
                                                     2, methane()),
-                                                    5, methane())
+                                                    5, methane()),
+                                                    4, isoButyl)
             ).iupacName(),
           "4-Isobutyl-2,5-dimethylheptane",
           "...or, failing that, the one with side chains with low locants" );
@@ -151,15 +151,10 @@ class BranchedAlkanesTest extends AlkanesTest {
       String largeSideChain = graftOnto(graftOnto(hexane(),
                                                   2, methane()),
                                                   4, methane());
-      is( new Alkane( graftOnto(graftOnto(graftOnto(
-                      graftOnto(graftOnto(graftOnto(straight(13),
-                                                    7, largeSideChain),
-                                                    7, largeSideChain),
-                                                    3, ethane()),
-                                                    5, methane()),
-                                                    9, methane()),
-                                                    11, methane())
-                    ).iupacName(),
+      is( new Alkane( "C(C(C(" + ethane() + "C(C(" + methane() + "C(C("
+                      + largeSideChain + largeSideChain + "C(C(" + methane()
+                      + "C(C(" + methane()+ "C(C))))))))))))" ).iupacName(),
+
           "7,7-Bis(2,4-dimethylhexyl)-3-ethyl-5,9,11-trimethyltridecane",
           "...or, failing that, side chains with large number of carbons" );
 
