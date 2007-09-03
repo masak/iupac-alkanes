@@ -18,6 +18,12 @@ class Alkane {
       "Hexa",   "Hepta", "Octa", "Nona",  "Deca",
       "Undeca",
     };
+    private static String[] secondLevelMultipliers = new String[] {
+      "",
+      "",        "Bis",      "Tris",    "Tetrakis", "Pentakis",
+      "Hexakis", "Heptakis", "Octakis", "Nonakis",  "Decakis",
+      "Undecakis",
+    };
     private static HashMap<String, String> commonAlkylNames = null;
 
     public Alkane( String description ) {
@@ -378,6 +384,7 @@ class Alkane {
     }
 
     private String sideChains(List<Carbon> chain, Carbon trunkCarbon) {
+
       HashMap<String, List<Integer>> sideChains
         = new HashMap<String, List<Integer>>();
 
@@ -408,9 +415,19 @@ class Alkane {
 
         String posList = commaSeparatedList(positions);
 
-        String fullName = positions.size() > 1
-          ? multipliers[positions.size()] + alkyl.toLowerCase()
-          : alkyl;
+        String fullName;
+        int multiples = positions.size();
+        if (multiples > 1) {
+          if ( usesMultipliers(alkyl) )
+            fullName = secondLevelMultipliers[ multiples ]
+                       + alkyl.toLowerCase();
+          else
+            fullName = multipliers[ multiples ]
+                       + alkyl.toLowerCase();
+        }
+        else {
+          fullName = alkyl;
+        }
 
         if ( "".equals(description) )
           description += posList + "-" + fullName;
@@ -421,13 +438,20 @@ class Alkane {
       return description;
     }
 
+    private static boolean usesMultipliers(String alkyl) {
+      for (String multiplier : multipliers)
+        if (alkyl.toLowerCase().indexOf(
+              "-" + multiplier.toLowerCase() ) > -1)
+          return true;
+
+      return false;
+    }
+
     private List<List<Integer>> sort(Set<List<Integer>> set) {
       List<List<Integer>> sorted = new ArrayList<List<Integer>>(set);
 
-      Collections.sort(sorted, new Comparator() {
-            public int compare(Object numbering1, Object numbering2) {
-              List<Integer> n1 = (List<Integer>) numbering1,
-                            n2 = (List<Integer>) numbering2;
+      Collections.sort(sorted, new Comparator<List<Integer>>() {
+            public int compare(List<Integer> n1, List<Integer> n2) {
 
               if ( n1.size() != n2.size() )
                 return n1.size() - n2.size();
