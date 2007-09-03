@@ -129,7 +129,7 @@ class Alkane {
       return leaves;
     }
 
-    private List<List<Carbon>> extendChains(
+    private static List<List<Carbon>> extendChains(
       List<List<Carbon>> chains,
       List<Carbon> traversed ) {
 
@@ -155,62 +155,36 @@ class Alkane {
       return newChains;
     }
 
-    private List<List<Carbon>> longestChains() {
+    private static List<List<Carbon>> longestFrom(
+      Carbon startNode,
+      List<List<Carbon>> longestChainsBefore ) {
 
-      if (carbons.isEmpty())
-        return new ArrayList<List<Carbon>>();
+      return longestFrom(startNode, longestChainsBefore, null);
+    }
 
-      List<List<Carbon>> longestChains = new ArrayList<List<Carbon>>();
-      List<Carbon> singleCarbonChain = new ArrayList<Carbon>();
-      singleCarbonChain.add( carbons.get(0) );
-      longestChains.add( singleCarbonChain );
+    private static List<List<Carbon>> longestFrom(
+      Carbon startNode,
+      List<List<Carbon>> longestChainsBefore,
+      Carbon offBoundsNode ) {
 
-      for ( Carbon leaf : leaves() ) {
-        List<List<Carbon>> queue = new ArrayList<List<Carbon>>();
-        List<Carbon> traversed = new ArrayList<Carbon>();
+      List<List<Carbon>> longestChains
+        = new ArrayList<List<Carbon>>( longestChainsBefore ),
+                         queue
+        = new ArrayList<List<Carbon>>();
 
-        List<Carbon> seed = new ArrayList<Carbon>();
-        seed.add(leaf);
-        queue.add(seed);
-
-        int length = 0;
-        while ( !queue.isEmpty() ) {
-
-          List<List<Carbon>> newChains = extendChains(queue, traversed);
-
-          if ( queue.get(0).size() > longestChains.get(0).size() ) {
-            longestChains.clear();
-            longestChains.addAll(queue);
-          }
-          else if ( queue.get(0).size() == longestChains.get(0).size() ) {
-            longestChains.addAll(queue);
-          }
-
-          queue = newChains;
-        }
+      if (longestChains.size() == 0) {
+        List<Carbon> singleCarbonChain = new ArrayList<Carbon>();
+        singleCarbonChain.add( startNode );
+        longestChains.add( singleCarbonChain );
       }
 
-      return longestChains;
-    }     
-
-    private List<List<Carbon>> longestChains(
-       Carbon trunkCarbon, Carbon branchCarbon) {
-
-      List<List<Carbon>> longestChains = new ArrayList<List<Carbon>>();
-      List<Carbon> singleCarbonChain = new ArrayList<Carbon>();
-      singleCarbonChain.add( carbons.get(0) );
-      longestChains.add( singleCarbonChain );
-
-      List<List<Carbon>> queue = new ArrayList<List<Carbon>>();
-
-      List<Carbon> traversed = new ArrayList<Carbon>();
-      traversed.add(trunkCarbon);
-
       List<Carbon> seed = new ArrayList<Carbon>();
-      seed.add(branchCarbon);
+      seed.add(startNode);
       queue.add(seed);
 
-      int length = 0;
+      List<Carbon> traversed = new ArrayList<Carbon>();
+      traversed.add( offBoundsNode );
+
       while ( !queue.isEmpty() ) {
 
         List<List<Carbon>> newChains = extendChains(queue, traversed);
@@ -227,6 +201,27 @@ class Alkane {
       }
 
       return longestChains;
+    }
+
+    private List<List<Carbon>> longestChains() {
+
+      if (carbons.isEmpty())
+        return new ArrayList<List<Carbon>>();
+
+      List<List<Carbon>> longestChains = new ArrayList<List<Carbon>>();
+
+      for ( Carbon leaf : leaves() )
+        longestChains = longestFrom( leaf, longestChains );
+
+      return longestChains;
+    }
+
+    private List<List<Carbon>> longestChains(
+       Carbon trunkCarbon, Carbon branchCarbon) {
+
+      return longestFrom(branchCarbon,
+                         new ArrayList<List<Carbon>>(),
+                         trunkCarbon);
     }
 
     private static List<Carbon> branchCarbons(
