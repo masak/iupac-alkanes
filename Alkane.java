@@ -29,7 +29,7 @@ class Alkane {
     public Alkane( String description ) {
       this.description = description;
 
-      build( description );
+      build(description);
     }
 
     private List<Carbon> build( String desc ) {
@@ -93,8 +93,8 @@ class Alkane {
       return descriptions.size() > 0 ? descriptions.get(0) : "";
     }
 
-    private String traverse( Carbon node,
-                             List<Carbon> alreadyTraversed ) {
+    private static String traverse( Carbon node,
+                                    List<Carbon> alreadyTraversed ) {
 
       List<String> descriptions = new ArrayList<String>();
 
@@ -250,7 +250,7 @@ class Alkane {
       return traversed;
     }
 
-    private HashMap<String, String> commonAlkylNamesHashMap() {
+    private static HashMap<String, String> commonAlkylNamesHashMap() {
       HashMap<String, String> names = new HashMap<String, String>();
 
       String[][] pairs = new String[][] {
@@ -497,7 +497,7 @@ class Alkane {
     }
 
     public boolean equals( Object o ) {
-      if ( !(o instanceof Alkane) )
+      if ( o.getClass() != Alkane.class )
         return false;
 
       Alkane other = (Alkane)o;
