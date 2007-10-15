@@ -128,7 +128,7 @@ class BranchedAlkanesTest extends AlkanesTest {
                                                     5, oneOneDiMethylPropyl)
                     ).iupacName(),
           "5,5-Bis(1,1-diethylpropyl)-2-methyldecane",
-          "Complicated indentical side groups marked bis-, tris-, etc" );
+          "Complicated identical side groups marked bis-, tris-, etc" );
 
       is( new Alkane( graftOnto(graftOnto(graftOnto(graftOnto(heptane(),
                                                               2, methane()),
