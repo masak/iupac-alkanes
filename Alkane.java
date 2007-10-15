@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -123,7 +124,7 @@ class Alkane {
       List<Carbon> leaves = new ArrayList<Carbon>();
 
       for ( Carbon carbon : this.carbons )
-        if ( carbon.neighbors().size() == 1 )
+        if ( carbon.neighbors().size() < 2 )
           leaves.add( carbon );
 
       return leaves;
@@ -167,10 +168,9 @@ class Alkane {
       List<List<Carbon>> longestChainsBefore,
       Carbon offBoundsNode ) {
 
-      List<List<Carbon>> longestChains
-        = new ArrayList<List<Carbon>>( longestChainsBefore ),
-                         queue
-        = new ArrayList<List<Carbon>>();
+      List<List<Carbon>>
+        longestChains = new ArrayList<List<Carbon>>( longestChainsBefore ),
+        queue         = new ArrayList<List<Carbon>>();
 
       if (longestChains.size() == 0) {
         List<Carbon> singleCarbonChain = new ArrayList<Carbon>();
@@ -193,7 +193,7 @@ class Alkane {
           longestChains.clear();
           longestChains.addAll(queue);
         }
-        else if ( queue.get(0).size() == longestChains.get(0).size() ) {
+        if ( queue.get(0).size() == longestChains.get(0).size() ) {
           longestChains.addAll(queue);
         }
 
