@@ -27,54 +27,80 @@ class Alkane {
     };
     private static HashMap<String, String> commonAlkylNames = null;
 
-    public Alkane( String description ) {
-      this.description = description;
+    private Alkane() {}
 
-      build(description);
+    public static Alkane fromSmiles( String description ) {
+      
+      Alkane alkane = new Alkane();
+
+      alkane.description = description;
+      alkane.buildFromSmiles(description);
+
+      return alkane;
     }
 
-    private List<Carbon> build( String desc ) {
-      List<Carbon> accumCarbons = new ArrayList<Carbon>();
+    private static int findStartParen( String s, int endParenPos ) {
+      int currentPos = endParenPos - 1,
+          parenLevel = 1;
 
-      for ( int pos = 0; pos < desc.length(); pos++ ) {
-        if ( desc.charAt( pos ) == 'C' ) {
-          Carbon newCarbon;
+      while ( parenLevel > 0 ) {
 
-          if ( pos < desc.length() - 1 && desc.charAt( pos+1 ) == '(' ) {
-            int startParenPos = ++pos,
-              endParenPos = startParenPos,
-              parenLevel = 1;
+        if ( currentPos < 0 )
+          throw new IllegalArgumentException( "Too few )'s: '"
+                                              + s + "':" + endParenPos );
 
-            while ( parenLevel > 0 ) {
-              if ( endParenPos >= desc.length()-1 )
-                throw new IllegalArgumentException( "Too few )'s: '"
-                                                    + desc + "':" + pos );
-
-              switch ( desc.charAt( ++endParenPos ) ) {
-                case '(': parenLevel++; break;
-                case ')': parenLevel--; break;
-              }
-            }
-
-            newCarbon = new Carbon(
-              build(desc.substring(startParenPos+1, endParenPos)) );
-
-            pos = endParenPos;
-          }
-          else {
-            newCarbon = new Carbon();
-          }
-
-          carbons.add( newCarbon );
-          accumCarbons.add( newCarbon );
-        }
-        else {
-          throw new IllegalArgumentException( "Strange description: '"
-                                              + desc + "':" + pos );
+        switch ( s.charAt( --currentPos ) ) {
+          case ')': parenLevel++; break;
+          case '(': parenLevel--; break;
         }
       }
 
-      return accumCarbons;
+      return currentPos;
+    }
+
+    private Carbon buildFromSmiles( String desc ) {
+      Carbon carbon = null;
+
+      for (int i = desc.length() - 1; i >= 0; i--) {
+
+        if (carbon == null) {
+          carbon = new Carbon();
+        }
+        else if (desc.charAt(i) == ')') {
+          List<Carbon> neighbors = new ArrayList<Carbon>();
+          neighbors.add(carbon);
+          
+          int startParenPos = findStartParen(desc, i);
+          String subexpression = desc.substring(startParenPos + 1, i);
+
+          Carbon headCarbon = buildFromSmiles( subexpression );
+          neighbors.add(headCarbon);
+
+          i = startParenPos - 1;
+
+          if (desc.charAt(i) == ')') {
+            startParenPos = findStartParen(desc, i);
+            subexpression = desc.substring(startParenPos + 1, i);
+
+            headCarbon = buildFromSmiles( subexpression );
+            neighbors.add(headCarbon);
+
+            i = startParenPos - 1;
+          }
+
+          carbon = new Carbon(neighbors);
+        }
+        else {
+          List<Carbon> neighbors = new ArrayList<Carbon>();
+          neighbors.add(carbon);
+
+          carbon = new Carbon(neighbors);
+        }
+
+        carbons.add(carbon);
+      }
+
+      return carbon;
     }
 
     public String toString() {
