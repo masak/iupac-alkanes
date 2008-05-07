@@ -25,7 +25,7 @@ class Alkane {
       "Hexakis", "Heptakis", "Octakis", "Nonakis",  "Decakis",
       "Undecakis",
     };
-    private static HashMap<String, String> commonAlkylNames = null;
+    private static Map<String, String> commonAlkylNames = null;
 
     private Alkane() {}
 
