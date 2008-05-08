@@ -9,6 +9,7 @@ class Carbon {
     }
 
     public Carbon( List<Carbon> neighbors ) {
+
       this.neighbors = neighbors;
 
       for ( Carbon neighbor : neighbors )

@@ -277,6 +277,7 @@ class Alkane {
     }
 
     private static HashMap<String, String> commonAlkylNamesHashMap() {
+
       HashMap<String, String> names = new HashMap<String, String>();
 
       String[][] pairs = new String[][] {
