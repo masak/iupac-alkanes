@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-class Alkane {
+class Carbohydrate {
 
     private String description;
     private List<Carbon> carbons = new ArrayList<Carbon>();
@@ -27,16 +27,16 @@ class Alkane {
     };
     private static Map<String, String> commonAlkylNames = null;
 
-    private Alkane() {}
+    private Carbohydrate() {}
 
-    public static Alkane fromSmiles( String description ) {
+    public static Carbohydrate fromSmiles( String description ) {
       
-      Alkane alkane = new Alkane();
+      Carbohydrate carbohydrate = new Carbohydrate();
 
-      alkane.description = description;
-      alkane.buildFromSmiles(description);
+      carbohydrate.description = description;
+      carbohydrate.buildFromSmiles(description);
 
-      return alkane;
+      return carbohydrate;
     }
 
     private static int findStartParen( String s, int endParenPos ) {
@@ -524,10 +524,10 @@ class Alkane {
     }
 
     public boolean equals( Object o ) {
-      if ( o.getClass() != Alkane.class )
+      if ( o.getClass() != Carbohydrate.class )
         return false;
 
-      Alkane other = (Alkane)o;
+      Carbohydrate other = (Carbohydrate)o;
       return normalization().equals( other.normalization() );
     }
 
