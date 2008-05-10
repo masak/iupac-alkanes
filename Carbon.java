@@ -3,24 +3,37 @@ import java.util.List;
 
 class Carbon {
 
-    private List<Carbon> neighbors = new ArrayList<Carbon>();
+    private List<Bond> bonds = new ArrayList<Bond>();
 
     public Carbon() {
     }
 
     public Carbon( List<Carbon> neighbors ) {
-
-      this.neighbors = neighbors;
-
       for ( Carbon neighbor : neighbors )
-        neighbor.addNeighbor( this );
+        bind( this, neighbor, Bond.Type.SINGLE );
     }
 
-    private void addNeighbor( Carbon neighbor ) {
-      neighbors.add( neighbor );
+    public Carbon( List<Carbon> neighbors, Bond.Type bondType ) {
+      for ( Carbon neighbor : neighbors )
+        bind( this, neighbor, bondType );
+    }
+
+    private static void bind( Carbon a, Carbon b, Bond.Type bondType ) {
+      Bond bond = new Bond(a, b, bondType);
+      a.bonds.add(bond);
+      b.bonds.add(bond);
+    }
+
+    public List<Bond> bonds() {
+      return new ArrayList<Bond>(bonds);
     }
 
     public List<Carbon> neighbors() {
-      return new ArrayList<Carbon>(neighbors);
+      List<Carbon> neighbors = new ArrayList<Carbon>();
+
+      for ( Bond bond : bonds )
+        neighbors.add( bond.atOtherEndOf( this ) );
+
+      return neighbors;
     }
 }

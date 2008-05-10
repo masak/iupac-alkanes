@@ -13,7 +13,9 @@ class AlkenesTest extends CarbohydratesTest {
       final String header = "C#CCCCCCCCCCCCC",
                    footer = "CCCCCCCCCCCCC#C";
 
-      is( Carbohydrate.fromSmiles( header + radical + footer ).iupacName(),
+      is( Iupac.fromMolecule(
+              Carbohydrate.fromSmiles( header + radical + footer )
+          ),
           name,
           description );
     }
@@ -22,62 +24,62 @@ class AlkenesTest extends CarbohydratesTest {
       // These tests are heavily based on
       // http://www.acdlabs.com/iupac/nomenclature/79/r79_53.htm
 
-      is( Carbohydrate.fromSmiles("CCCC=CC").iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles("CCCC=CC") ),
           "2-Hexene",
           "One double bond -> ending is '-ene'" );
          
-      is( Carbohydrate.fromSmiles("CC=CCC=C").iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles("CC=CCC=C") ),
           "1,4-Hexadiene",
           "Two double bonds -> ending is '-diene'" );
          
-      is( Carbohydrate.fromSmiles("C=C").iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles("C=C") ),
           "Ethylene",
           "Non-systematic name: 'ethylene' instead of '1-Ethene'" );
 
-      is( Carbohydrate.fromSmiles("C=C=C").iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles("C=C=C") ),
           "Allene",
           "Non-systematic name: 'allene' instead of '1,2-Propdiene'" );
 
-      is( Carbohydrate.fromSmiles( "C#CCC" ).iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#CCC" ) ),
           "2-Butyne",
           "One triple bond -> ending is '-yne'"
         );
          
-      is( Carbohydrate.fromSmiles( "C#C" ).iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#C" ) ),
           "Acetylene",
           "Non-systematic name: 'acetylene' instead of 'methyne'"
         );
          
-      is( Carbohydrate.fromSmiles( "C#CC=CC=C" ).iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#CC=CC=C" ) ),
           "1,3-Hexadien-5-yne",
           "Interaction between double and triple bonds I"
         );
 
-      is( Carbohydrate.fromSmiles( "CC=CC#C" ).iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "CC=CC#C" ) ),
           "3-Penten-1-yne",
           "Interaction between double and triple bonds II" );
          
-      is( Carbohydrate.fromSmiles( "C#CCC=C" ).iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#CCC=C" ) ),
           "1-Penten-4-yne",
           "Interaction between double and triple bonds III" );
          
-      is( Carbohydrate.fromSmiles( "C#CC(CCC)=C(CCC)C=C" ).iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#CC(CCC)=C(CCC)C=C" ) ),
           "3,4-Dipropyl-1,3-hexadien-5-yne",
           "Main chain has maximum number of double and triple bonds I" );
          
-      is( Carbohydrate.fromSmiles( "C=CC(C#C)C=CC=C" ).iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C=CC(C#C)C=CC=C" ) ),
           "5-Ethynyl-1,3,6-heptatriene",
           "Main chain has maximum number of double and triple bonds II" );
          
-      is( Carbohydrate.fromSmiles( "C(C)(C)(C)CCC=C" ).iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C(C)(C)(C)CCC=C" ) ),
           "5,5-Dimethyl-1-hexene",
           "Main chain has maximum number of double and triple bonds III" );
          
-      is( Carbohydrate.fromSmiles( "CC#C(C=C)CCC=C" ).iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "CC#C(C=C)CCC=C" ) ),
           "4-Vinyl-1-hepten-5-yne",
           "Main chain has maximum number of double and triple bonds IV" );
          
-      is( Carbohydrate.fromSmiles( "C=CC(C)=C" ).iupacName(),
+      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C=CC(C)=C" ) ),
           "Isoprene",
           "Exception: isoprene" );
          

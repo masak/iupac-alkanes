@@ -57,7 +57,9 @@ class StraightAlkanesTest extends CarbohydratesTest {
       String exp = "C";
       for ( int i = 0; i < names.length; i++ ) {
         names[i] = capitalize( names[i] );
-        is( Carbohydrate.fromSmiles( exp ).iupacName(), names[i], names[i] );
+        is( Iupac.fromMolecule( Carbohydrate.fromSmiles( exp ) ),
+            names[i],
+            names[i] );
         exp += "C";
       }
     }

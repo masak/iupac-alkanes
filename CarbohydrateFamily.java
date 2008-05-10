@@ -27,7 +27,8 @@ class CarbohydrateFamily implements Iterable {
       ArrayList<Carbohydrate> carbohydrates = new ArrayList<Carbohydrate>();
 
       for ( String carbohydrateString : possibleCarbohydrateStrings(carbons) ) {
-        Carbohydrate newCarbohydrate = new Carbohydrate( carbohydrateString );
+        Carbohydrate newCarbohydrate
+          = Carbohydrate.fromSmiles( carbohydrateString );
 
         if ( !carbohydrates.contains(newCarbohydrate) )
           carbohydrates.add(newCarbohydrate);
