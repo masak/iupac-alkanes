@@ -1,0 +1,146 @@
+#!/usr/bin/perl -w
+use strict;
+use List::Util qw<first>;
+
+my $CHECK_INTERVAL = 5; # seconds
+my @TEST_SUITE = qw< StraightAlkanes BranchedAlkanes Alkenes >;
+
+my @java_files = <*.java>;
+my %modification_time_for = map { $_ => -M $_ } @java_files;
+my %old_test_results_for;
+
+while (1) { # forever, baby!
+    sleep $CHECK_INTERVAL;
+
+    for my $file ( @java_files ) {
+
+        if ( $modification_time_for{$file} > -M $file ) { # file changed
+
+            $modification_time_for{$file} = -M $file;
+
+            clear();
+            compile( @java_files )
+            && run_tests( @TEST_SUITE );
+        }
+    }
+}
+
+sub clear {
+    print "\n" for 0 .. 99;
+}
+
+sub compile {
+    my @java_files = @_;
+
+    print "Compiling...\n";
+    my $result = system("javac " . join ' ', @java_files);
+
+    return $result == 0;
+}
+
+sub run_tests {
+    my @test_files = @_;
+
+    my %test_results_for;
+    my $found_failing_test = '';
+    my $improvement = '';
+
+    print "Running tests...\n";
+
+    TEST_FILE:
+    for my $test_file ( map { $_.'Test' } @test_files ) {
+        my $output = `java $test_file`;
+
+        my @test_results = analyze($output);
+        $test_results_for{$test_file} = \@test_results;
+
+        if ( %old_test_results_for ) {
+            my @old_results = @{ $old_test_results_for{$test_file} };
+
+            for my $test_index (0 .. $#test_results) {
+
+                if ( $old_results[$test_index] eq '[ok]'
+                     && $test_results[$test_index] ne '[ok]' ) {
+
+                    my $test_number = $test_index + 1;
+                    print "Regression on test $test_file:$test_number: ",
+                          test_description( $output, $test_number ), "\n";
+                }
+                elsif ( $old_results[$test_index] ne '[ok]'
+                        && $test_results[$test_index] eq '[ok]' ) {
+
+                    my $test_number = $test_index + 1;
+                    print "Test $test_file:$test_number now passes: ",
+                          test_description( $output, $test_number ), "\n";
+                }
+            }
+        }
+
+        next TEST_FILE if $found_failing_test;
+        for my $test_index (0 .. $#test_results) {
+            my $result = $test_results[ $test_index ];
+
+            if ( $result ne '[ok]' ) {
+                ++$found_failing_test;
+
+                my $test_number = $test_index + 1;
+                print "$test_file:\n";
+                print what_went_wrong($output, $test_number), "\n";
+
+                next TEST_FILE;
+            }
+        }
+    }
+
+    if ( !$found_failing_test ) {
+        print "All tests pass! Write more tests...\n";
+    }
+
+    %old_test_results_for = %test_results_for;
+
+    return $improvement;
+}
+
+sub analyze {
+    my ($test_output) = @_;
+    my @result;
+
+    for (split "\n", $test_output) {
+
+        if ( /^\d\d\d - \[  ok  \]/ ) {
+            push @result, '[ok]';
+        }
+        if ( my ($actual_value) = /Actual: (.*)$/ ) {
+            push @result, $actual_value;
+        }
+    }
+
+    return @result;
+}
+
+sub test_description {
+    my ($output, $test_number) = @_;
+
+    my $num = sprintf('%03d', $test_number);
+    my @output_line_by_line = split "\n", $output;
+    shift @output_line_by_line while scalar(@output_line_by_line)
+                                     && $output_line_by_line[0] !~ /^$num/;
+
+    return '' if !@output_line_by_line;
+
+    my $description = $output_line_by_line[ 0 ];
+    $description =~ s/.*?\] //;
+    return $description;
+}
+
+sub what_went_wrong {
+    my ($output, $test_number) = @_;
+
+    my $num = sprintf('%03d', $test_number);
+    my @output_line_by_line = split "\n", $output;
+    shift @output_line_by_line while scalar(@output_line_by_line)
+                                     && $output_line_by_line[0] !~ /^$num/;
+
+    return '' if !@output_line_by_line;
+    return join "\n", @output_line_by_line[ 0 .. 2 ];
+}
