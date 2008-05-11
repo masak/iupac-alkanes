@@ -41,13 +41,13 @@ class AlkenesTest extends CarbohydratesTest {
           "Non-systematic name: 'allene' instead of '1,2-Propdiene'" );
 
       is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#CCC" ) ),
-          "2-Butyne",
+          "1-Butyne",
           "One triple bond -> ending is '-yne'"
         );
          
       is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#C" ) ),
           "Acetylene",
-          "Non-systematic name: 'acetylene' instead of 'methyne'"
+          "Non-systematic name: 'acetylene' instead of '1-Ethyne'"
         );
          
       is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#CC=CC=C" ) ),
