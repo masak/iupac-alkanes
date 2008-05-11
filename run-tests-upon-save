@@ -58,19 +58,24 @@ sub run_tests {
             my @old_results = @{ $old_test_results_for{$test_file} };
 
             for my $test_index (0 .. $#test_results) {
+                if ( exists $old_results[$test_index]
+                     && $old_results[$test_index] ne '[ok]'
+                     && $test_results[$test_index] eq '[ok]' ) {
 
-                if ( $old_results[$test_index] eq '[ok]'
+                    my $test_number = $test_index + 1;
+                    print "Test $test_file:$test_number now passes: ",
+                          test_description( $output, $test_number ), "\n";
+                }
+            }
+
+            for my $test_index (0 .. $#test_results) {
+
+                if ( exists $old_results[$test_index]
+                     && $old_results[$test_index] eq '[ok]'
                      && $test_results[$test_index] ne '[ok]' ) {
 
                     my $test_number = $test_index + 1;
                     print "Regression on test $test_file:$test_number: ",
-                          test_description( $output, $test_number ), "\n";
-                }
-                elsif ( $old_results[$test_index] ne '[ok]'
-                        && $test_results[$test_index] eq '[ok]' ) {
-
-                    my $test_number = $test_index + 1;
-                    print "Test $test_file:$test_number now passes: ",
                           test_description( $output, $test_number ), "\n";
                 }
             }
