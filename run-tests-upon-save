@@ -32,7 +32,6 @@ sub clear {
 sub compile {
     my @java_files = @_;
 
-    print "Compiling...\n";
     my $result = system("javac " . join ' ', @java_files);
 
     return $result == 0;
@@ -44,8 +43,6 @@ sub run_tests {
     my %test_results_for;
     my $found_failing_test = '';
     my $improvement = '';
-
-    print "Running tests...\n";
 
     TEST_FILE:
     for my $test_file ( map { $_.'Test' } @test_files ) {
@@ -62,6 +59,7 @@ sub run_tests {
                      && $old_results[$test_index] ne '[ok]'
                      && $test_results[$test_index] eq '[ok]' ) {
 
+                    $improvement = 1;
                     my $test_number = $test_index + 1;
                     print "Test $test_file:$test_number now passes: ",
                           test_description( $output, $test_number ), "\n";
@@ -74,6 +72,7 @@ sub run_tests {
                      && $old_results[$test_index] eq '[ok]'
                      && $test_results[$test_index] ne '[ok]' ) {
 
+                    $improvement = '';
                     my $test_number = $test_index + 1;
                     print "Regression on test $test_file:$test_number: ",
                           test_description( $output, $test_number ), "\n";
