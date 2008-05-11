@@ -77,6 +77,13 @@ class Carbohydrate {
           carbon = new Carbon( neighbors, Bond.Type.DOUBLE );
           i--;
         }
+        else if (desc.charAt(i) == '#') {
+          List<Carbon> neighbors = new ArrayList<Carbon>();
+          neighbors.add(carbon);
+
+          carbon = new Carbon( neighbors, Bond.Type.TRIPLE );
+          i--;
+        }
         else {
           List<Carbon> neighbors = new ArrayList<Carbon>();
           neighbors.add(carbon);
@@ -96,17 +103,6 @@ class Carbohydrate {
 
     public int numberOfCarbons() {
       return carbons.size();
-    }
-
-    public boolean hasDoubleBond() {
-      for (Carbon carbon : carbons) {
-        for (Bond bond : carbon.bonds()) {
-          if (bond.type() == Bond.Type.DOUBLE)
-            return true;
-        }
-      }
-
-      return false;
     }
 
     public String toString() {
@@ -153,13 +149,63 @@ class Carbohydrate {
     }
 
     public List<Carbon> leaves() {
-      List<Carbon> leaves = new ArrayList<Carbon>();
 
-      for ( Carbon carbon : this.carbons )
-        if ( carbon.neighbors().size() < 2 )
-          leaves.add( carbon );
+      return new ArrayList<Carbon>() {{
+          for ( Carbon carbon : carbons )
+            if ( carbon.neighbors().size() < 2 )
+              add( carbon );
+      }};
+    }
 
-      return leaves;
+    public List<Chain> allChains() {
+
+      List<Chain> chains = new ArrayList<Chain>();
+
+      for (Carbon leaf : leaves())
+        addChainsFrom(leaf, chains);
+
+      return chains;
+    }
+
+    private void addChainsFrom(Carbon leaf, List<Chain> chains) {
+      Chain chain = new Chain();
+
+      traverseAndAddChains(chain, leaf, chains);
+    }
+
+    private void traverseAndAddChains(Chain currentChain,
+                                      Carbon currentAtom,
+                                      List<Chain> chains) {
+
+      List<Bond> bondsToNewAtoms
+        = new ArrayList<Bond>(currentAtom.bonds());
+
+      if (currentChain.atoms().size() > 0) {
+        Carbon lastAtom = currentChain.lastAtom();
+
+        for (Bond bond : currentAtom.bonds())
+          if (bond.atOtherEndOf(currentAtom) == lastAtom)
+            bondsToNewAtoms.remove(bond); // need to do more than this
+                                          // when we have cycles
+      }
+
+      currentChain.add( currentAtom );
+
+      if (bondsToNewAtoms.size() == 0)
+        chains.add(currentChain);
+      else
+        for (Bond bond : bondsToNewAtoms)
+          traverseAndAddChains( currentChain.copy(), bond, chains );
+    }
+
+    private void traverseAndAddChains(Chain currentChain,
+                                      Bond currentBond,
+                                      List<Chain> chains) {
+      currentChain.add( currentBond );
+      Carbon lastAtom = currentChain.lastAtom();
+      traverseAndAddChains( currentChain,
+                            currentBond.atOtherEndOf(lastAtom),
+                            chains );
     }
 
     public boolean equals( Object o ) {

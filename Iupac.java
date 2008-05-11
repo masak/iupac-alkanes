@@ -24,23 +24,21 @@ public class Iupac {
     };
     private static Map<String, String> commonAlkylNames = null;
 
-    private static List<List<Carbon>> extendChains(
-      List<List<Carbon>> chains,
+    private static List<Chain> extendChains(
+      List<Chain> chains,
       List<Carbon> traversed ) {
 
-      List< List<Carbon> > newChains
-        = new ArrayList< List<Carbon> >();
+      List<Chain> newChains = new ArrayList<Chain>();
 
-      for ( List<Carbon> currentChain : chains ) {
+      for ( Chain currentChain : chains ) {
 
-        Carbon currentNode = currentChain.get(currentChain.size() - 1);
+        Carbon currentNode = currentChain.lastAtom();
         traversed.add(currentNode);
 
         for ( Carbon neighbor : currentNode.neighbors() ) {
           if ( !traversed.contains(neighbor) ) {
-            List<Carbon> longerChain
-              = new ArrayList<Carbon>(currentChain);
 
+            Chain longerChain = currentChain.copy();
             longerChain.add(neighbor);
             newChains.add(longerChain);
           }
@@ -50,29 +48,29 @@ public class Iupac {
       return newChains;
     }
 
-    private static List<List<Carbon>> longestFrom(
+    private static List<Chain> longestFrom(
       Carbon startNode,
-      List<List<Carbon>> longestChainsBefore ) {
+      List<Chain> longestChainsBefore ) {
 
       return longestFrom(startNode, longestChainsBefore, null);
     }
 
-    private static List<List<Carbon>> longestFrom(
+    private static List<Chain> longestFrom(
       Carbon startNode,
-      List<List<Carbon>> longestChainsBefore,
+      List<Chain> longestChainsBefore,
       Carbon offBoundsNode ) {
 
-      List<List<Carbon>>
-        longestChains = new ArrayList<List<Carbon>>( longestChainsBefore ),
-        queue         = new ArrayList<List<Carbon>>();
+      List<Chain>
+        longestChains = new ArrayList<Chain>( longestChainsBefore ),
+        queue         = new ArrayList<Chain>();
 
       if (longestChains.size() == 0) {
-        List<Carbon> singleCarbonChain = new ArrayList<Carbon>();
+        Chain singleCarbonChain = new Chain();
         singleCarbonChain.add( startNode );
         longestChains.add( singleCarbonChain );
       }
 
-      List<Carbon> seed = new ArrayList<Carbon>();
+      Chain seed = new Chain();
       seed.add(startNode);
       queue.add(seed);
 
@@ -81,13 +79,17 @@ public class Iupac {
 
       while ( !queue.isEmpty() ) {
 
-        List<List<Carbon>> newChains = extendChains(queue, traversed);
+        List<Chain> newChains = extendChains(queue, traversed);
 
-        if ( queue.get(0).size() > longestChains.get(0).size() ) {
+        if ( queue.get(0).atoms().size()
+             > longestChains.get(0).atoms().size() ) {
+
           longestChains.clear();
           longestChains.addAll(queue);
         }
-        if ( queue.get(0).size() == longestChains.get(0).size() ) {
+        if ( queue.get(0).atoms().size()
+             == longestChains.get(0).atoms().size() ) {
+
           longestChains.addAll(queue);
         }
 
@@ -97,12 +99,12 @@ public class Iupac {
       return longestChains;
     }
 
-    private static List<List<Carbon>> longestChains(Carbohydrate carbohydrate) {
+    private static List<Chain> longestChains(Carbohydrate carbohydrate) {
 
       if (carbohydrate.numberOfCarbons() == 0)
         throw new IllegalArgumentException("Empty molecule");
 
-      List<List<Carbon>> longestChains = new ArrayList<List<Carbon>>();
+      List<Chain> longestChains = new ArrayList<Chain>();
 
       for ( Carbon leaf : carbohydrate.leaves() )
         longestChains = longestFrom( leaf, longestChains );
@@ -110,11 +112,11 @@ public class Iupac {
       return longestChains;
     }
 
-    private static List<List<Carbon>> longestChains(
+    private static List<Chain> longestChains(
        Carbon trunkCarbon, Carbon branchCarbon) {
 
       return longestFrom(branchCarbon,
-                         new ArrayList<List<Carbon>>(),
+                         new ArrayList<Chain>(),
                          trunkCarbon);
     }
 
@@ -169,23 +171,21 @@ public class Iupac {
       Carbon trunkCarbon,
       Carbon branchCarbon) {
 
-      List<Carbon>
-        alkylGroup
-          = branchCarbons(trunkCarbon, branchCarbon),
-        longestChain
-          = longestChains(trunkCarbon, branchCarbon).get(0);
+      List<Carbon> alkylGroup = branchCarbons(trunkCarbon, branchCarbon);
+      Chain longestChain = longestChains(trunkCarbon, branchCarbon).get(0);
 
-      if ( alkylGroup.size() == longestChain.size() )
-        return iupacNames[ longestChain.size() ] + "yl";
+      if ( alkylGroup.size() == longestChain.atoms().size() )
+        return iupacNames[ longestChain.atoms().size() ] + "yl";
 
       String prefix = sideChains(longestChain, trunkCarbon);
 
       if ( commonAlkylNames == null )
         commonAlkylNames = commonAlkylNamesMap();
 
-      String  name = prefix
-                     + iupacNames[ longestChain.size() ].toLowerCase()
-                     + "yl",
+      String  name
+        = prefix
+          + iupacNames[ longestChain.atoms().size() ].toLowerCase()
+          + "yl",
         commonName = commonAlkylNames.get(name);
 
       if ( commonName != null )
@@ -235,7 +235,7 @@ public class Iupac {
         return names.toArray( new String[0] );
     }
 
-    private static String commaSeparatedList(List<Integer> list) {
+    private static String commaSeparatedList(final List<Integer> list) {
 
       StringBuilder sb = new StringBuilder();
 
@@ -251,19 +251,16 @@ public class Iupac {
       return sb.toString();
     }
 
-    private static List<Integer> numbering(List<Carbon> chain) {
+    private static List<Integer> numbering(Chain chain) {
       return numbering(chain, null);
     }
 
-    private static List<Integer> numbering(
-      List<Carbon> chain,
-      Carbon trunkCarbon) {
+    private static List<Integer> numbering(Chain chain, Carbon trunkCarbon) {
 
       List<Integer> numbering = new ArrayList<Integer>();
 
       int position = 0;
-
-      for ( Carbon chainCarbon : chain ) {
+      for ( Carbon chainCarbon : chain.atoms() ) {
         position++;
 
         for ( Carbon neighbor : chainCarbon.neighbors() )
@@ -274,18 +271,18 @@ public class Iupac {
       return numbering;
     }
 
-    private static String sideChains(List<Carbon> chain) {
+    private static String sideChains(Chain chain) {
       return sideChains(chain, null);
     }
 
-    private static String sideChains(List<Carbon> chain, Carbon trunkCarbon) {
+    private static String sideChains(Chain chain, Carbon trunkCarbon) {
 
       Map<String, List<Integer>> sideChains
         = new HashMap<String, List<Integer>>();
 
       int position = 0;
 
-      for ( Carbon chainCarbon : chain ) {
+      for ( Carbon chainCarbon : chain.atoms() ) {
         position++;
 
         for ( Carbon neighbor : chainCarbon.neighbors() ) {
@@ -347,35 +344,107 @@ public class Iupac {
       List<List<Integer>> sorted = new ArrayList<List<Integer>>(set);
 
       Collections.sort(sorted, new Comparator<List<Integer>>() {
-            public int compare(List<Integer> n1, List<Integer> n2) {
+          public int compare(List<Integer> n1, List<Integer> n2) {
 
-              if ( n1.size() != n2.size() )
-                return n2.size() - n1.size();
+            if ( n1.size() != n2.size() )
+              return n2.size() - n1.size();
 
-              for ( int i = 0; i < n1.size(); i++ )
-                if ( n1.get(i).compareTo(n2.get(i)) != 0 )
-                  return n1.get(i) - n2.get(i);
+            for ( int i = 0; i < n1.size(); i++ )
+              if ( n1.get(i).compareTo(n2.get(i)) != 0 )
+                return n1.get(i) - n2.get(i);
             
-              return 0;
-            }
-        });
+            return 0;
+          }
+      });
 
       return sorted;
     }
 
-    private static List<Carbon> highestValuedChain(Carbohydrate carbohydrate) {
+    private static List<Chain> mostSaturated(final List<Chain> chains) {
+      int mostSaturatedSoFar = 0;
+      for ( Chain chain : chains )
+        if ( mostSaturatedSoFar < chain.doubleAndTripleBonds().size() )
+          mostSaturatedSoFar = chain.doubleAndTripleBonds().size();
 
-      List<List<Carbon>> longestChains = longestChains(carbohydrate);
+      final int mostSaturated = mostSaturatedSoFar;
+      return new ArrayList<Chain>() {{
+          for ( Chain chain : chains )
+            if ( chain.doubleAndTripleBonds().size() == mostSaturated )
+              add( chain );
+      }};
+    }
 
-      if ( carbohydrate.numberOfCarbons() == longestChains.get(0).size() )
-        return carbohydrate.carbons();
+    private static List<Chain> longest(final List<Chain> chains) {
+      int longestSoFar = 0;
+      for ( Chain chain : chains )
+        if ( longestSoFar < chain.atoms().size() )
+          longestSoFar = chain.atoms().size();
 
-      Map<List<Integer>, List<Carbon>> numberings
-        = new HashMap<List<Integer>, List<Carbon>>();
-      for ( List<Carbon> chain : longestChains )
-        numberings.put( numbering(chain), chain );
+      final int longest = longestSoFar;
+      return new ArrayList<Chain>() {{
+          for ( Chain chain : chains )
+            if ( chain.atoms().size() == longest )
+              add( chain );
+      }};
+    }
+
+    private static <T> List<T> append(final List<T> a, final List<T> b) {
+      return new ArrayList<T>(a) {{ addAll(b); }};
+    }
+
+    private static Chain highestValuedChain(Carbohydrate carbohydrate) {
+
+      final List<Chain> allChains = carbohydrate.allChains(),
+              mostSaturatedChains = mostSaturated(allChains),
+                    longestChains = longest(mostSaturatedChains);
+
+      Map<List<Integer>, Chain> numberings
+        = new HashMap<List<Integer>, Chain>() {{
+            if ( !longestChains.get(0).tripleBonds().isEmpty() )
+              for ( Chain chain : longestChains )
+                put( append(
+                       locationsOn(chain.doubleBonds(), chain),
+                       locationsOn(chain.tripleBonds(), chain)
+                     ), chain );
+            else if ( !longestChains.get(0).doubleBonds().isEmpty() )
+              for ( Chain chain : longestChains )
+                put( locationsOn(chain.doubleBonds(), chain), chain );
+            else
+              for ( Chain chain : longestChains )
+                put( numbering(chain), chain );
+          }};
 
       return numberings.get( sort( numberings.keySet() ).get(0) );
+    }
+
+    private static String someSuffix(String suffix, int number) {
+      return number == 1
+        ? suffix
+        : "a" + multipliers[number].toLowerCase() + suffix;
+    }
+
+    private static String alkeneSuffix(Chain chain) {
+      return someSuffix("ene", chain.doubleBonds().size());
+    }
+
+    private static String alkenSuffix(Chain chain) {
+      return someSuffix("en", chain.doubleBonds().size());
+    }
+
+    private static String alkyneSuffix(Chain chain) {
+      return someSuffix("yne", chain.tripleBonds().size());
+    }
+
+    private static List<Integer> locationsOn( final List<Bond> bonds,
+                                              final Chain chain ) {
+      return new ArrayList<Integer>() {{
+          int position = 0;
+          for ( Bond bond : chain.bonds() ) {
+            ++position;
+            if ( bonds.contains(bond) )
+              add(position);
+          }
+      }};              
     }
 
     public static String fromMolecule(Carbohydrate carbohydrate) {
@@ -383,19 +452,52 @@ public class Iupac {
       if ( iupacNames == null )
         iupacNames = iupacNameList();
 
-      List<Carbon> bestChain = highestValuedChain(carbohydrate);
+      Chain bestChain = highestValuedChain(carbohydrate);
       String prefix = sideChains(bestChain),
-        mainChain = iupacNames[ bestChain.size() ],
-        suffix = carbohydrate.hasDoubleBond() ? "ene" : "ane";
+        mainChain = iupacNames[ bestChain.atoms().size() ],
+        suffix = bestChain.tripleBonds().size() > 0
+                 ? alkyneSuffix(bestChain) : bestChain.doubleBonds().size() > 0
+                 ? alkeneSuffix(bestChain) : "ane";
 
-      if ( suffix.equals("ene") )
-        mainChain = "2-" + mainChain;
+      if ( suffix.endsWith("ene") )
+        mainChain
+          = commaSeparatedList(
+              locationsOn(bestChain.doubleBonds(), bestChain)
+            ) + '-' + mainChain;
+      else if ( suffix.endsWith("yne") ) {
+        if ( bestChain.doubleBonds().isEmpty() ) {
+          mainChain
+            = commaSeparatedList(
+                locationsOn(bestChain.tripleBonds(), bestChain)
+              ) + '-' + mainChain;
+        }
+        else {
+          mainChain
+            = commaSeparatedList(
+                locationsOn(bestChain.doubleBonds(), bestChain)
+              ) + '-' + mainChain;
+          suffix = alkenSuffix(bestChain)
+                   + '-'
+                   + commaSeparatedList(
+                       locationsOn(bestChain.tripleBonds(), bestChain)
+                     )
+                   + '-'
+                   + suffix;
+        }
+      }
 
-      if (prefix.length() == 0)
-        return mainChain + suffix;
+      String name = prefix.length() == 0
+        ? mainChain + suffix
+        : prefix + mainChain.toLowerCase() + suffix;
 
-      return prefix
-             + mainChain.toLowerCase()
-             + suffix;
+      Map<String, String> nonSystematicNames = new HashMap<String, String>() {{
+          put("1-Ethene",       "Ethylene");
+          put("1,2-Propadiene", "Allene");
+          put("1-Ethyne",       "Acetylene");
+      }};
+
+      return nonSystematicNames.containsKey(name)
+        ? nonSystematicNames.get(name)
+        : name;
     }
 }
