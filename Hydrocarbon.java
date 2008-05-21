@@ -2,21 +2,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class Carbohydrate {
+class Hydrocarbon {
 
     private String description;
     private List<Carbon> carbons = new ArrayList<Carbon>();
 
-    private Carbohydrate() {}
+    private Hydrocarbon() {}
 
-    public static Carbohydrate fromSmiles( String description ) {
+    public static Hydrocarbon fromSmiles( String description ) {
       
-      Carbohydrate carbohydrate = new Carbohydrate();
+      Hydrocarbon hydrocarbon = new Hydrocarbon();
 
-      carbohydrate.description = description;
-      carbohydrate.buildFromSmiles(description);
+      hydrocarbon.description = description;
+      hydrocarbon.buildFromSmiles(description);
 
-      return carbohydrate;
+      return hydrocarbon;
     }
 
     private static int findStartParen( String s, int endParenPos ) {
@@ -209,10 +209,10 @@ class Carbohydrate {
     }
 
     public boolean equals( Object o ) {
-      if ( o.getClass() != Carbohydrate.class )
+      if ( o.getClass() != Hydrocarbon.class )
         return false;
 
-      Carbohydrate other = (Carbohydrate)o;
+      Hydrocarbon other = (Hydrocarbon)o;
       return normalization().equals( other.normalization() );
     }
 

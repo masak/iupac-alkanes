@@ -99,14 +99,14 @@ public class Iupac {
       return longestChains;
     }
 
-    private static List<Chain> longestChains(Carbohydrate carbohydrate) {
+    private static List<Chain> longestChains(Hydrocarbon hydrocarbon) {
 
-      if (carbohydrate.numberOfCarbons() == 0)
+      if (hydrocarbon.numberOfCarbons() == 0)
         throw new IllegalArgumentException("Empty molecule");
 
       List<Chain> longestChains = new ArrayList<Chain>();
 
-      for ( Carbon leaf : carbohydrate.leaves() )
+      for ( Carbon leaf : hydrocarbon.leaves() )
         longestChains = longestFrom( leaf, longestChains );
 
       return longestChains;
@@ -392,9 +392,9 @@ public class Iupac {
       return new ArrayList<T>(a) {{ addAll(b); }};
     }
 
-    private static Chain highestValuedChain(Carbohydrate carbohydrate) {
+    private static Chain highestValuedChain(Hydrocarbon hydrocarbon) {
 
-      final List<Chain> allChains = carbohydrate.allChains(),
+      final List<Chain> allChains = hydrocarbon.allChains(),
               mostSaturatedChains = mostSaturated(allChains),
                     longestChains = longest(mostSaturatedChains);
 
@@ -447,12 +447,12 @@ public class Iupac {
       }};              
     }
 
-    public static String fromMolecule(Carbohydrate carbohydrate) {
+    public static String fromMolecule(Hydrocarbon hydrocarbon) {
       
       if ( iupacNames == null )
         iupacNames = iupacNameList();
 
-      Chain bestChain = highestValuedChain(carbohydrate);
+      Chain bestChain = highestValuedChain(hydrocarbon);
       String prefix = sideChains(bestChain),
         mainChain = iupacNames[ bestChain.atoms().size() ],
         suffix = bestChain.tripleBonds().size() > 0

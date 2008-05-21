@@ -1,4 +1,4 @@
-class AlkenesTest extends CarbohydratesTest {
+class AlkenesTest extends HydrocarbonsTest {
 
     private AlkenesTest() {
       super( "Alkenes", 28 );
@@ -14,7 +14,7 @@ class AlkenesTest extends CarbohydratesTest {
                    footer = "CCCCCCCCCCCCC#C";
 
       is( Iupac.fromMolecule(
-              Carbohydrate.fromSmiles( header + radical + footer )
+              Hydrocarbon.fromSmiles( header + radical + footer )
           ),
           name,
           description );
@@ -24,62 +24,62 @@ class AlkenesTest extends CarbohydratesTest {
       // These tests are heavily based on
       // http://www.acdlabs.com/iupac/nomenclature/79/r79_53.htm
 
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles("CCCC=CC") ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles("CCCC=CC") ),
           "2-Hexene",
           "One double bond -> ending is '-ene'" );
          
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles("CC=CCC=C") ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles("CC=CCC=C") ),
           "1,4-Hexadiene",
           "Two double bonds -> ending is '-diene'" );
          
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles("C=C") ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles("C=C") ),
           "Ethylene",
           "Non-systematic name: 'ethylene' instead of '1-Ethene'" );
 
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles("C=C=C") ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles("C=C=C") ),
           "Allene",
           "Non-systematic name: 'allene' instead of '1,2-Propdiene'" );
 
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#CCC" ) ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles( "C#CCC" ) ),
           "1-Butyne",
           "One triple bond -> ending is '-yne'"
         );
          
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#C" ) ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles( "C#C" ) ),
           "Acetylene",
           "Non-systematic name: 'acetylene' instead of '1-Ethyne'"
         );
          
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#CC=CC=C" ) ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles( "C#CC=CC=C" ) ),
           "1,3-Hexadien-5-yne",
           "Interaction between double and triple bonds I"
         );
 
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "CC=CC#C" ) ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles( "CC=CC#C" ) ),
           "3-Penten-1-yne",
           "Interaction between double and triple bonds II" );
          
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#CCC=C" ) ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles( "C#CCC=C" ) ),
           "1-Penten-4-yne",
           "Interaction between double and triple bonds III" );
          
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C#CC(CCC)=C(CCC)C=C" ) ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles( "C#CC(CCC)=C(CCC)C=C" ) ),
           "3,4-Dipropyl-1,3-hexadien-5-yne",
           "Main chain has maximum number of double and triple bonds I" );
          
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C=CC(C#C)C=CC=C" ) ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles( "C=CC(C#C)C=CC=C" ) ),
           "5-Ethynyl-1,3,6-heptatriene",
           "Main chain has maximum number of double and triple bonds II" );
          
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C(C)(C)(C)CCC=C" ) ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles( "C(C)(C)(C)CCC=C" ) ),
           "5,5-Dimethyl-1-hexene",
           "Main chain has maximum number of double and triple bonds III" );
          
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "CC#C(C=C)CCC=C" ) ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles( "CC#C(C=C)CCC=C" ) ),
           "4-Vinyl-1-hepten-5-yne",
           "Main chain has maximum number of double and triple bonds IV" );
          
-      is( Iupac.fromMolecule( Carbohydrate.fromSmiles( "C=CC(C)=C" ) ),
+      is( Iupac.fromMolecule( Hydrocarbon.fromSmiles( "C=CC(C)=C" ) ),
           "Isoprene",
           "Exception: isoprene" );
          

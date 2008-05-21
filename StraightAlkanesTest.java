@@ -1,4 +1,4 @@
-class StraightAlkanesTest extends CarbohydratesTest {
+class StraightAlkanesTest extends HydrocarbonsTest {
 
     private StraightAlkanesTest() {
       super("Straight alkanes", 100);
@@ -57,7 +57,7 @@ class StraightAlkanesTest extends CarbohydratesTest {
       String exp = "C";
       for ( int i = 0; i < names.length; i++ ) {
         names[i] = capitalize( names[i] );
-        is( Iupac.fromMolecule( Carbohydrate.fromSmiles( exp ) ),
+        is( Iupac.fromMolecule( Hydrocarbon.fromSmiles( exp ) ),
             names[i],
             names[i] );
         exp += "C";

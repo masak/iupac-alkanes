@@ -1,6 +1,6 @@
-abstract class CarbohydratesTest extends Test {
+abstract class HydrocarbonsTest extends Test {
 
-      CarbohydratesTest( String name, int testsPlanned ) {
+      HydrocarbonsTest( String name, int testsPlanned ) {
          super(name, testsPlanned);
       }
 
